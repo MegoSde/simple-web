@@ -273,3 +273,88 @@ graph TB
 - **IN-NF-08:** Dokumentationen skal være versionsstyret (fx i Git).  
 - **IN-NF-09:** Dokumentationen må maks. tage 10 min. at opdatere pr. ændring.  
 
+### 🛡️ SOC – Logindsamling
+**Som SOC-ansvarlig vil jeg kunne indsamle og gemme logs fra systemet, så jeg kan opdage og analysere sikkerhedshændelser.**
+
+#### Use Case – Logindsamling
+- **Aktør:** SOC  
+- **Forudsætning:** Systemet er i drift og genererer logs.  
+- **Hovedforløb:**
+  1. SOC konfigurerer central logindsamling (fx webserver-, applikations- og systemlogs).  
+  2. Logs sendes til et sikkert centralt logsystem.  
+  3. Logs gemmes i minimum 30 dage.  
+  4. SOC kan søge i og filtrere logs.  
+
+#### Funktionelle krav
+- **SOC-FK-01:** Systemet skal indsamle logs fra servere, services og applikationen.  
+- **SOC-FK-02:** Logs skal sendes til et centralt system.  
+- **SOC-FK-03:** Logs skal gemmes i minimum 30 dage.  
+
+#### Ikke-funktionelle krav
+- **SOC-NF-01:** Logs skal overføres krypteret.  
+- **SOC-NF-02:** Logs skal være søgbare inden for 1 minut efter de er oprettet.  
+
+---
+
+### 🛡️ SOC – Alarmhåndtering
+**Som SOC-ansvarlig vil jeg kunne modtage og håndtere alarmer, så jeg hurtigt kan reagere på sikkerhedshændelser.**
+
+#### Use Case – Alarmhåndtering
+- **Aktør:** SOC  
+- **Forudsætning:** Logindsamling og overvågning er opsat.  
+- **Hovedforløb:**
+  1. Systemet genererer en alarm (fx gentagne loginforsøg, DoS, XSS-forsøg).  
+  2. Alarmen sendes til SOC.  
+  3. SOC vurderer alarmen og kategoriserer den (fx kritisk, høj, middel, lav).  
+  4. SOC eskalerer hændelsen efter procedurer.  
+
+#### Funktionelle krav
+- **SOC-FK-04:** Systemet skal generere alarmer baseret på definerede sikkerhedsmønstre.  
+- **SOC-FK-05:** Alarmer skal kategoriseres efter alvorlighed.  
+
+#### Ikke-funktionelle krav
+- **SOC-NF-03:** Alarmer skal være tilgængelige for SOC senest 30 sekunder efter registrering.  
+- **SOC-NF-04:** Alarmer må ikke overses (skal logges centralt og markeres som “behandlet”).  
+
+---
+
+### 🛡️ SOC – Incident Response
+**Som SOC-ansvarlig vil jeg kunne reagere på sikkerhedshændelser, så systemet hurtigt kan sikres og gendannes.**
+
+#### Use Case – Incident Response
+- **Aktør:** SOC  
+- **Forudsætning:** En alarm er registreret.  
+- **Hovedforløb:**
+  1. SOC identificerer hændelsen via alarmer og logs.  
+  2. SOC aktiverer en responsprocedure (fx blokering af IP, nedlukning af service).  
+  3. SOC dokumenterer hændelsen og tiltag.  
+  4. Systemet gendannes til normal drift.  
+
+#### Funktionelle krav
+- **SOC-FK-06:** SOC skal kunne iværksætte afværgeforanstaltninger (fx blokering via WAF/firewall).  
+- **SOC-FK-07:** SOC skal dokumentere hændelser og respons.  
+
+#### Ikke-funktionelle krav
+- **SOC-NF-05:** Incident response skal iværksættes inden for 5 minutter ved kritiske hændelser.  
+- **SOC-NF-06:** Hændelsesrapport skal være tilgængelig senest 24 timer efter hændelsen.  
+
+---
+
+### 🛡️ SOC – Rapportering
+**Som SOC-ansvarlig vil jeg kunne udarbejde rapporter over sikkerhedshændelser, så organisationen kan evaluere og forbedre sikkerheden.**
+
+#### Use Case – Rapportering
+- **Aktør:** SOC  
+- **Forudsætning:** Logs og hændelsesdata er gemt.  
+- **Hovedforløb:**
+  1. SOC genererer en rapport (fx ugentlig/månedlig).  
+  2. Rapporten opsummerer alarmer, hændelser og respons.  
+  3. Rapporten deles med Drift og Ledelse.  
+
+#### Funktionelle krav
+- **SOC-FK-08:** Systemet skal understøtte generering af rapporter baseret på logs og hændelser.  
+- **SOC-FK-09:** Rapporten skal inkludere antal hændelser, kategorisering og respons.  
+
+#### Ikke-funktionelle krav
+- **SOC-NF-07:** Rapporten skal kunne genereres automatisk.  
+- **SOC-NF-08:** Rapporten skal udarbejdes mindst én gang pr. måned.  
