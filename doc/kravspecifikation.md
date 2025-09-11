@@ -183,4 +183,93 @@ graph TB
 - **UI-NF-01:** Dokumentationen skal være enkel, kortfattet og konsistent i struktur (max ½ side per beslutning).  
 - **UI-NF-02:** Oversigten over krav skal opdateres mindst én gang per iteration/sprint.  
 - **UI-NF-03:** Dokumentationen skal være versionsstyret (gemmes i Git).  
-- **UI-NF-04:** Processen for dokumentation må ikke forsinke udvikling/udrulning væsentligt (maks. 10 min. pr. arkitekturvalg).  
+- **UI-NF-04:** Processen for dokumentation må ikke forsinke udvikling/udrulning væsentligt (maks. 10 min. pr. arkitekturvalg).
+
+### 🖥️ Infrastruktur – Deployment
+**Som Infrastruktur-ansvarlig vil jeg kunne deploye systemet med en strategi der sikrer zero downtime, så hjemmesiden altid er tilgængelig for brugerne.**
+
+#### Use Case – Deployment
+- **Aktør:** Infrastruktur  
+- **Forudsætning:** Systemet er klar til udrulning fra versionsstyring.  
+- **Hovedforløb:**
+  1. Infrastruktur vælger en deploy-strategi (Blue/Green, Rolling, Canary).  
+  2. Deployment udføres uden nedetid.  
+  3. Hvis deployment fejler → rollback udføres automatisk.  
+
+#### Funktionelle krav
+- **IN-FK-01:** Systemet skal understøtte zero downtime deployment.  
+- **IN-FK-02:** Deployment-processen skal have en rollback-mekanisme.  
+
+#### Ikke-funktionelle krav
+- **IN-NF-01:** Deployment skal kunne gennemføres på under 5 minutter.  
+- **IN-NF-02:** Rollback skal kunne gennemføres på under 2 minutter.  
+
+---
+
+### 🖥️ Infrastruktur – Overvågning
+**Som Infrastruktur-ansvarlig vil jeg kunne overvåge servere og services, så jeg hurtigt kan reagere på fejl eller nedbrud.**
+
+#### Use Case – Overvågning
+- **Aktør:** Infrastruktur  
+- **Forudsætning:** Systemet kører i produktion.  
+- **Hovedforløb:**
+  1. Systemet opsamler data om servere og services (CPU, RAM, disk, netværk, svartider).  
+  2. Systemet genererer alarmer ved fejl eller nedbrud.  
+  3. Infrastruktur modtager og reagerer på alarmer.  
+
+#### Funktionelle krav
+- **IN-FK-03:** Systemet skal overvåge servere og services.  
+- **IN-FK-04:** Systemet skal generere alarmer ved fejl, nedbrud eller ressourceoverskridelse.  
+
+#### Ikke-funktionelle krav
+- **IN-NF-03:** Overvågning skal ske med maks. 1 minuts forsinkelse.  
+- **IN-NF-04:** Alarmer skal være tilgængelige for drift/SOC senest 30 sekunder efter fejl registreres.  
+
+---
+
+### 🖥️ Infrastruktur – Backup
+**Som Infrastruktur-ansvarlig vil jeg kunne lave backup og gendanne systemet, så data og funktioner ikke går tabt ved fejl eller nedbrud.**
+
+#### Use Case – Backup
+- **Aktør:** Infrastruktur  
+- **Forudsætning:** Systemet er i drift med kode og data.  
+- **Hovedforløb:**
+  1. Systemet tager automatiske backups af kode og data.  
+  2. Backups gemmes sikkert og kan testes.  
+  3. Systemet gendannes fra backup ved behov.  
+
+#### Funktionelle krav
+- **IN-FK-05:** Systemet skal tage regelmæssige backups af kode og data.  
+- **IN-FK-06:** Systemet skal understøtte restore/gendannelse fra backup.  
+- **IN-FK-07:** Backup-processen skal testes regelmæssigt.  
+
+#### Ikke-funktionelle krav
+- **IN-NF-05:** Backup skal tages mindst én gang i døgnet.  
+- **IN-NF-06:** Backup skal testes mindst én gang om ugen.  
+
+---
+
+### 🖥️ Infrastruktur – Dokumentation
+**Som Infrastruktur-ansvarlig vil jeg kunne dokumentere vores arkitektur og drift, så alle aktører har et fælles overblik over systemet.**
+
+#### Use Case – Dokumentation
+- **Aktør:** Infrastruktur  
+- **Forudsætning:** Projektet har en fælles kravspecifikation og versionsstyring.  
+- **Hovedforløb:**
+  1. Infrastruktur planlægger drift- og vedligeholdelsesopgaver på Kanban board.  
+  2. Alle tasks linkes til kravspecifikationen.  
+  3. Infrastruktur udarbejder nødvendige diagrammer og beskrivelser.  
+  4. Dokumentationen gemmes versionsstyret i Git og opdateres løbende.  
+
+#### Funktionelle krav
+- **IN-FK-08:** Infrastruktur skal dokumentere netværksantologi (netværksdiagram).  
+- **IN-FK-09:** Infrastruktur skal dokumentere komponent- og deployment-diagrammer.  
+- **IN-FK-10:** Infrastruktur skal dokumentere driftprocesser (deployment, overvågning, backup).  
+- **IN-FK-11:** Infrastruktur skal bruge et Kanban board til planlægning af tasks.  
+- **IN-FK-12:** Alle infrastruktur-tasks på Kanban boardet skal kunne henføres til et eller flere krav i kravspecifikationen.  
+
+#### Ikke-funktionelle krav
+- **IN-NF-07:** Dokumentationen skal være enkel, kortfattet og opdateres løbende.  
+- **IN-NF-08:** Dokumentationen skal være versionsstyret (fx i Git).  
+- **IN-NF-09:** Dokumentationen må maks. tage 10 min. at opdatere pr. ændring.  
+
