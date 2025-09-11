@@ -358,3 +358,61 @@ graph TB
 #### Ikke-funktionelle krav
 - **SOC-NF-07:** Rapporten skal kunne genereres automatisk.  
 - **SOC-NF-08:** Rapporten skal udarbejdes mindst én gang pr. måned.  
+
+### 💀 Hacker – SQL Injection
+**Som Hacker vil jeg forsøge at manipulere med søgefunktionen via SQL injection, så jeg kan få adgang til data, jeg ikke burde se.**
+
+#### Use Case – SQL Injection
+- **Anti-aktør:** Hacker  
+- **Forudsætning:** Systemet har en søgefunktion.  
+- **Hovedforløb (angriberens perspektiv):**
+  1. Hacker indtaster ondsindet SQL-kode i søgefeltet.  
+  2. Systemet sender input videre til databasen.  
+  3. Hacker får adgang til data eller ændrer indhold.  
+
+#### Funktionelle anti-krav
+- **HA-FK-01:** Hacker skal ikke kunne ændre eller tilgå data via SQL injection.  
+
+#### Ikke-funktionelle anti-krav
+- **HA-NF-01:** Alle database-forespørgsler skal parameteriseres og valideres.  
+- **HA-NF-02:** Fejlmeddelelser må ikke afsløre databaseinformation.  
+
+---
+
+### 💀 Hacker – XSS (Cross-Site Scripting)
+**Som Hacker vil jeg forsøge at indsætte ondsindet JavaScript i indhold eller søgefelter, så det afvikles hos andre brugere.**
+
+#### Use Case – XSS
+- **Anti-aktør:** Hacker  
+- **Forudsætning:** Systemet viser brugerinput eller søgeresultater.  
+- **Hovedforløb (angriberens perspektiv):**
+  1. Hacker indtaster JavaScript i inputfelt.  
+  2. Systemet viser input uden korrekt escaping.  
+  3. Andre brugeres browser afvikler koden.  
+
+#### Funktionelle anti-krav
+- **HA-FK-02:** Hacker skal ikke kunne afvikle scripts i andre brugeres browser via XSS.  
+
+#### Ikke-funktionelle anti-krav
+- **HA-NF-03:** Alt brugerinput skal valideres og escapes korrekt.  
+- **HA-NF-04:** Systemet skal have en Content-Security-Policy (CSP), der forhindrer indlæsning af uautoriseret JavaScript.  
+
+---
+
+### 💀 Hacker – DDoS (Distributed Denial of Service)
+**Som Hacker vil jeg forsøge at overbelaste hjemmesiden med mange forespørgsler, så den ikke er tilgængelig for almindelige brugere.**
+
+#### Use Case – DDoS
+- **Anti-aktør:** Hacker  
+- **Forudsætning:** Systemet er offentligt tilgængeligt på internettet.  
+- **Hovedforløb (angriberens perspektiv):**
+  1. Hacker sender tusindvis af forespørgsler til systemet.  
+  2. Systemets ressourcer bliver overbelastet.  
+  3. Almindelige brugere oplever nedetid eller langsomme svartider.  
+
+#### Funktionelle anti-krav
+- **HA-FK-03:** Hacker skal ikke kunne forhindre almindelige brugere i at tilgå hjemmesiden via DDoS.  
+
+#### Ikke-funktionelle anti-krav
+- **HA-NF-05:** Systemet skal understøtte rate limiting og request filtering.  
+- **HA-NF-06:** Systemet skal være beskyttet bag en WAF eller loadbalancer, der kan mitigere simple DoS-forsøg.  
