@@ -1,4 +1,30 @@
-# Kravspecifikation v1.0
+# Kravspecifikation – Læringsprojekt: Web Application i Produktionsmiljø
+
+## Problemformulering
+Hvordan kan man sætte en simpel hjemmeside i drift i et miljø, der ligner et produktionsmiljø, og samtidig sikre at både udvikling, infrastruktur og cybersikkerhed spiller sammen?  
+Løsningen skal give elever på hovedforløb 1 i datateknikeruddannelsen mulighed for at arbejde praktisk med deres respektive specialer (infrastruktur, programmering og cybersikkerhed) i et fælles projekt.  
+
+## Formål
+Formålet er at give eleverne en realistisk øvelse, hvor de oplever:  
+- hvordan en simpel hjemmeside kan blive til et driftklart system,  
+- hvordan krav og tekniske valg dokumenteres og spores,  
+- hvordan man kan arbejde tværfagligt med udvikling, drift og sikkerhed,  
+- hvordan man implementerer funktionelle og ikke-funktionelle krav i praksis.  
+
+Projektet træner samarbejde, dokumentation, deployment, overvågning og sikkerhed, med fokus på at bygge en løsning, der ligner en professionel produktionsopsætning – men på et niveau, der er tilgængeligt for elever på H1.  
+
+## Kort beskrivelse af systemet
+Systemet er en simpel hjemmeside, der:  
+- indeholder statiske sider med indhold,  
+- har en enkel søgefunktion,  
+- kan opdateres med nyt indhold af Marketing,  
+- understøtter logging, overvågning, backup og sikkerhedsbeskyttelse.  
+
+Systemet skal:  
+- kunne deployes med zero downtime,  
+- være optimeret til Core Web Vitals,  
+- have alle relevante sikkerhedsheaders,  
+- opnå 100 i alle Lighthouse-kategorier.  
 
 ## Aktører
 ```mermaid
