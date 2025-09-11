@@ -127,3 +127,34 @@ graph TB
 - **MA-NF-07:** Statistikdata skal opdateres mindst én gang i timen.  
 - **MA-NF-08:** Statistikvisningen skal kun være tilgængelig via HTTPS og kræve autentifikation.  
 - **MA-NF-09:** Statistikmodulet skal ikke påvirke hjemmesidens Lighthouse score (100 i alle kategorier).  
+
+### 💻 Udvikler – Tilføje funktionalitet
+**Som Udvikler vil jeg kunne tilføje ny funktionalitet til hjemmesiden, så systemet kan udvikles og forbedres løbende.**
+
+#### Use Case – Tilføje funktioner
+- **Aktør:** Udvikler  
+- **Forudsætning:** Udvikleren arbejder i et versionsstyringssystem (fx Git).  
+- **Hovedforløb:**
+  1. Udvikler planlægger en ny funktion på Kanban/Scrum board.  
+  2. Tasken på boardet refererer til et konkret krav i kravspecifikationen.  
+  3. Udvikler opretter en ny gren (branch) i versionsstyring.  
+  4. Udvikler implementerer og tester funktionen i et testmiljø.  
+  5. E2E-tests og code review køres.  
+  6. Funktionen merges til hovedbranch, hvis tests og review er godkendt.  
+- **Udvidelser:**
+  - Hvis test fejler → ændringen må ikke merges til hovedbranch.  
+
+#### Funktionelle krav
+- **UD-FK-01:** Systemet skal bruge versionsstyring (fx Git) til alt kodearbejde.  
+- **UD-FK-02:** Systemet skal understøtte branches til udvikling og integration.  
+- **UD-FK-03:** Systemet skal have et Kanban- eller Scrum board til planlægning og opgavestyring.  
+- **UD-FK-04:** Alle tasks på Kanban/Scrum boardet skal kunne henføres til et eller flere krav i kravspecifikationen.  
+- **UD-FK-05:** Nye funktioner skal kunne testes i et separat testmiljø inden de udrulles.  
+- **UD-FK-06:** Systemet skal køre automatiserede E2E-tests på ændringer før produktion.  
+
+#### Ikke-funktionelle krav
+- **UD-NF-01:** Alle commits skal følge en aftalt versionsstrategi (fx semantisk versionering).  
+- **UD-NF-02:** Udviklingsteamet skal følge en fælles Code of Conduct for samarbejde og kommunikation.  
+- **UD-NF-03:** Testmiljøet skal afspejle produktionen, så fejl kan opdages tidligt.  
+- **UD-NF-04:** E2E-tests skal fuldføres på under 5 minutter for at understøtte hurtig feedback.  
+- **UD-NF-05:** Versionshistorik skal bevares, så tidligere versioner altid kan gendannes.  
