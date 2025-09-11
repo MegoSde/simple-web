@@ -158,3 +158,29 @@ graph TB
 - **UD-NF-03:** Testmiljøet skal afspejle produktionen, så fejl kan opdages tidligt.  
 - **UD-NF-04:** E2E-tests skal fuldføres på under 5 minutter for at understøtte hurtig feedback.  
 - **UD-NF-05:** Versionshistorik skal bevares, så tidligere versioner altid kan gendannes.  
+
+### 💻🖥️ Udvikler & Infrastruktur – Dokumentere proces og overholdelse af krav
+**Som Udvikler/Infrastruktur-team vil vi kunne dokumentere vores arkitekturvalg og løbende opdatere et oversigtsdokument, så vi kan vise hvordan systemet opfylder de opstillede krav.**
+
+#### Use Case – Dokumentation af proces og krav
+- **Aktører:** Udvikler + Infrastruktur  
+- **Forudsætning:** Projektet har en fælles kravspecifikation.  
+- **Hovedforløb:**
+  1. Teamet træffer et teknisk eller arkitektonisk valg (fx valg af webserver, deploy-strategi).  
+  2. Valget dokumenteres kortfattet med begrundelse i et procesdokument (fx README eller wiki).  
+  3. Teamet markerer i kravspecifikationen, hvilke krav valget understøtter.  
+  4. Når krav ændres eller nye tilføjes, opdateres dokumentationen.  
+- **Udvidelser:**
+  - Hvis et krav ikke kan opfyldes → teamet beskriver hvorfor, og foreslår en alternativ løsning.  
+
+#### Funktionelle krav
+- **UI-FK-01:** Teamet skal dokumentere arkitekturvalg med begrundelser i et procesdokument.  
+- **UI-FK-02:** Teamet skal føre en oversigt over, hvilke krav der er opfyldt af systemet.  
+- **UI-FK-03:** Dokumentationen skal løbende opdateres, når systemet ændres.  
+- **UI-FK-04:** Dokumentationen skal være tilgængelig for alle aktører i projektet (f.eks. i Git-repo).  
+
+#### Ikke-funktionelle krav
+- **UI-NF-01:** Dokumentationen skal være enkel, kortfattet og konsistent i struktur (max ½ side per beslutning).  
+- **UI-NF-02:** Oversigten over krav skal opdateres mindst én gang per iteration/sprint.  
+- **UI-NF-03:** Dokumentationen skal være versionsstyret (gemmes i Git).  
+- **UI-NF-04:** Processen for dokumentation må ikke forsinke udvikling/udrulning væsentligt (maks. 10 min. pr. arkitekturvalg).  
