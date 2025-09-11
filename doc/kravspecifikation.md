@@ -74,3 +74,56 @@ graph TB
 - **VI-NF-08:** Søgefunktionen må ikke afsløre interne fejl (fx SQL-fejl) i brugerfladen.  
 - **VI-NF-09:** Søgefunktionen skal være tilgængelig via HTTPS.  
 - **VI-NF-10:** Søgeresultat-siden skal bidrage til en samlet Lighthouse score på 100 i alle kategorier.  
+
+### 📈 Marketing – Opdatere indhold
+**Som Marketing-medarbejder vil jeg kunne opdatere indhold på hjemmesiden, så kampagner og information altid er aktuelle.**
+
+#### Use Case – Opdatere indhold
+- **Aktør:** Marketing  
+- **Forudsætning:** Marketing har adgang til et simpelt redigeringsværktøj eller en aftalt proces med Udvikler/Infrastruktur.  
+- **Hovedforløb:**
+  1. Marketing anmoder om at ændre tekst/billeder (via CMS, formular eller pull request-lignende proces).  
+  2. Systemet gør ændringerne tilgængelige i et *preview-miljø*.  
+  3. Marketing godkender ændringerne i preview.  
+  4. Systemet publicerer ændringerne i produktion med zero downtime.  
+- **Udvidelser:**
+  - Hvis indholdet ikke kan valideres → systemet giver en fejlbesked.  
+
+#### Funktionelle krav
+- **MA-FK-01:** Systemet skal understøtte opdatering af eksisterende tekstindhold.  
+- **MA-FK-02:** Systemet skal understøtte upload og visning af billeder.  
+- **MA-FK-03:** Systemet skal sikre, at ændringer kan ses i et *preview-miljø* inden publicering.  
+- **MA-FK-04:** Systemet skal publicere ændringer til hjemmesiden uden nedetid.  
+
+#### Ikke-funktionelle krav
+- **MA-NF-01:** Udrulning af ændringer skal ske med zero downtime.  
+- **MA-NF-02:** Indholdsændringer skal kunne ses af Visitors senest 1 minut efter publicering.  
+- **MA-NF-03:** Preview-miljøet skal være isoleret fra produktion, men afspejle samme design og performance.  
+- **MA-NF-04:** Preview og publicering skal kun ske via HTTPS.  
+- **MA-NF-05:** Opdateringer skal ikke kompromittere performance eller Lighthouse score (100 i alle kategorier).  
+
+---
+
+### 📈 Marketing – Se statistik
+**Som Marketing-medarbejder vil jeg kunne se statistik over besøg og brugeradfærd, så jeg kan vurdere effekten af kampagner.**
+
+#### Use Case – Se statistik
+- **Aktør:** Marketing  
+- **Forudsætning:** Sitet indsamler basis-analyse data (fx page views).  
+- **Hovedforløb:**
+  1. Marketing åbner statistikværktøjet.  
+  2. Systemet viser rapporter over sidevisninger og søgeadfærd.  
+  3. Marketing bruger informationen til at evaluere kampagner.  
+- **Udvidelser:**
+  - Hvis data ikke er tilgængelige → systemet viser en fejlbesked og logger fejlen.  
+
+#### Funktionelle krav
+- **MA-FK-05:** Systemet skal indsamle og gemme data om sidevisninger.  
+- **MA-FK-06:** Systemet skal vise simple rapporter (fx mest besøgte sider, hyppige søgeord).  
+- **MA-FK-07:** Systemet skal give mulighed for at filtrere rapporter efter periode (fx dag/uge/måned).  
+
+#### Ikke-funktionelle krav
+- **MA-NF-06:** Statistik skal være tilgængelig uden at påvirke performance for Visitors.  
+- **MA-NF-07:** Statistikdata skal opdateres mindst én gang i timen.  
+- **MA-NF-08:** Statistikvisningen skal kun være tilgængelig via HTTPS og kræve autentifikation.  
+- **MA-NF-09:** Statistikmodulet skal ikke påvirke hjemmesidens Lighthouse score (100 i alle kategorier).  
