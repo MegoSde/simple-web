@@ -51,391 +51,471 @@ graph TB
 ### 👤 Visitor - Se indhold (US-01)
 **Som Visitor vil jeg kunne læse indhold på hjemmesiden, så jeg kan finde de informationer jeg har brug for.**
 
-#### Use Case – Se indhold
-- **VIS-FK-01-001:** Visitor
-- **VIS-FK-01-002:** Sitet er tilgængeligt via et domæne (fx https://example.com)
-- **VIS-FK-01-003:**
-  1. Visitor åbner forsiden i en browser.
-  2. Systemet returnerer indholdet (tekst, billeder).
-  3. Visitor kan navigere til undersider via menu eller links.
-- **VIS-FK-01-004:**
-  - Hvis siden ikke findes → systemet returnerer en 404-fejlside.
+#### Use Cases
+- **VIS-01-UC01 – Åbne forside**
+  - **Aktør:** Visitor
+  - **Forudsætning:** Domænet er aktivt; websitet kører; netværk er tilgængeligt.
+  - **Trigger/Mål:** Læse forsiden.
+  - **Hovedforløb:** 1) Visitor åbner forsiden i browseren. 2) Systemet returnerer HTML, CSS og nødvendige assets. 3) Forside-indhold vises og kan læses/scrolles.
+  - **Udvidelser/Fejl:** a) Side findes ikke → 404-side vises. b) Assets fejler → siden vises med graceful degradation.
+- **VIS-01-UC02 – Navigere til underside**
+  - **Aktør:** Visitor
+  - **Forudsætning:** Menu og links er konfigureret.
+  - **Trigger/Mål:** Finde og læse en underside.
+  - **Hovedforløb:** 1) Visitor klikker på et menupunkt/link. 2) Systemet serverer undersiden. 3) Indholdet vises og kan læses.
+  - **Udvidelser/Fejl:** a) Dødt link → 404-side vises. b) Siden kræver ikke-login og vises uden sporbar personlig data.
+
 
 #### Funktionelle krav
-- **VIS-FK-01-005:** Systemet skal præsentere en forside med indhold (tekst og billeder).
-- **VIS-FK-01-006:** Systemet skal understøtte navigering til undersider via menupunkter.
-- **VIS-FK-01-007:** Systemet skal returnere en brugervenlig 404-side, hvis indhold ikke findes.
+- **VIS-01-FK-001:** Systemet skal præsentere en forside med indhold (tekst og billeder). (dækker: VIS-01-UC01)
+- **VIS-01-FK-002:** Systemet skal understøtte navigering til undersider via menupunkter. (dækker: VIS-01-UC02)
+- **VIS-01-FK-003:** Systemet skal returnere en brugervenlig 404-side, hvis indhold ikke findes. (dækker: VIS-01-UC02)
 
 #### Ikke-funktionelle krav
-- **VIS-NF-01-008:** Hjemmesiden skal overholde en designmanual, der beskriver det grafiske design (farver, fonte, layout og billedstil).
-- **VIS-NF-01-009:** Siderne skal benytte semantisk HTML5 (fx \<header\>, \<nav\>, \<main\>, \<article\>, \<section\>, \<footer\>) for tilgængelighed og SEO.
-- **VIS-NF-01-010:** Forsiden skal loade på under 1 sekund ved normal belastning.
-- **VIS-NF-01-011:** Alt indhold skal være tilgængeligt med gyldig HTML og CSS (WCAG + W3C-valideret).
-- **VIS-NF-01-012:** Core Web Vitals (LCP, CLS, FID) skal ligge inden for Google’s “Good” threshold.
-- **VIS-NF-01-013:** Hjemmesiden skal kun være tilgængelig via HTTPS.
-- **VIS-NF-01-014:** Hjemmesiden skal opnå en Lighthouse score på 100 i alle kategorier (Performance, Accessibility, Best Practices, SEO).
+- **VIS-01-NF-004:** Hjemmesiden skal overholde en designmanual, der beskriver det grafiske design (farver, fonte, layout og billedstil). (dækker: VIS-01-UC01, VIS-01-UC02)
+- **VIS-01-NF-005:** Siderne skal benytte semantisk HTML5 (fx \<header\>, \<nav\>, \<main\>, \<article\>, \<section\>, \<footer\>) for tilgængelighed og SEO. (dækker: VIS-01-UC01, VIS-01-UC02)
+- **VIS-01-NF-006:** Forsiden skal loade på under 1 sekund ved normal belastning. (dækker: VIS-01-UC01)
+- **VIS-01-NF-007:** Alt indhold skal være tilgængeligt med gyldig HTML og CSS (WCAG + W3C-valideret). (dækker: VIS-01-UC01, VIS-01-UC02)
+- **VIS-01-NF-008:** Core Web Vitals (LCP, CLS, FID) skal ligge inden for Google’s “Good” threshold. (dækker: VIS-01-UC01, VIS-01-UC02)
+- **VIS-01-NF-009:** Hjemmesiden skal kun være tilgængelig via HTTPS. (dækker: VIS-01-UC01, VIS-01-UC02)
+- **VIS-01-NF-010:** Hjemmesiden skal opnå en Lighthouse score på 100 i alle kategorier (Performance, Accessibility, Best Practices, SEO). (dækker: VIS-01-UC01, VIS-01-UC02)
 
 ---
 
 ### 👤 Visitor – Søg på sitet (US-02)
 **Som Visitor vil jeg kunne søge på hjemmesiden, så jeg hurtigt kan finde relevant indhold.**
 
-#### Use Case – Søg indhold
-- **VIS-FK-02-015:** Visitor
-- **VIS-FK-02-016:** Sitet er tilgængeligt og indeholder sider med tekstindhold.
-- **VIS-FK-02-017:**
-  1. Visitor indtaster en søgetekst i søgefeltet.
-  2. Systemet matcher forespørgslen mod indhold.
-  3. Systemet returnerer en liste med søgeresultater.
-  4. Visitor vælger et resultat og bliver sendt til den tilsvarende side.
-- **VIS-FK-02-018:**
-  - Hvis der ikke findes resultater → systemet viser en tom-resultat-side med forslag.
+#### Use Cases
+- **VIS-02-UC01 – Foretage søgning med resultater**
+  - **Aktør:** Visitor
+  - **Forudsætning:** Indeksering af indhold er gennemført.
+  - **Trigger/Mål:** Finde relevant side via søgning.
+  - **Hovedforløb:** 1) Visitor indtaster søgetekst og trykker søg. 2) Systemet matcher forespørgsel mod indekset. 3) En rangordnet liste af resultater vises.
+  - **Udvidelser/Fejl:** a) Resultater <n> vises pagineret. b) Specialtegn i søgefelt håndteres sikkert.
+- **VIS-02-UC02 – Foretage søgning uden resultater**
+  - **Aktør:** Visitor
+  - **Forudsætning:** Indeksering af indhold er gennemført.
+  - **Trigger/Mål:** Forstå at intet blev fundet og få forslag.
+  - **Hovedforløb:** 1) Visitor indtaster søgetekst. 2) Systemet matcher uden fund. 3) Tom-resultat vises med forslag til næste skridt.
+  - **Udvidelser/Fejl:** a) Staveforslag vises (hvis tilgængeligt). b) Ingen lækker af interne fejl i UI.
 
 #### Funktionelle krav
-- **VIS-FK-02-019:** Systemet skal tilbyde et søgefelt på hjemmesiden.
-- **VIS-FK-02-020:** Systemet skal kunne returnere en liste med relevante søgeresultater baseret på indhold.
-- **VIS-FK-02-021:** Systemet skal give feedback, hvis søgningen ikke giver resultater.
+- **VIS-02-FK-011:** Systemet skal tilbyde et søgefelt på hjemmesiden. (dækker: VIS-02-UC01, VIS-02-UC02)
+- **VIS-02-FK-012:** Systemet skal kunne returnere en liste med relevante søgeresultater baseret på indhold. (dækker: VIS-02-UC01, VIS-02-UC02)
+- **VIS-02-FK-013:** Systemet skal give feedback, hvis søgningen ikke giver resultater. (dækker: VIS-02-UC01, VIS-02-UC02)
 
 #### Ikke-funktionelle krav
-- **VIS-NF-02-022:** Søgefunktionen skal returnere resultater på under 2 sekunder.
-- **VIS-NF-02-023:** Søgeresultater skal rangordnes efter relevans.
-- **VIS-NF-02-024:** Søgefunktionen må ikke afsløre interne fejl (fx SQL-fejl) i brugerfladen.
-- **VIS-NF-02-025:** Søgefunktionen skal være tilgængelig via HTTPS.
-- **VIS-NF-02-026:** Søgeresultat-siden skal bidrage til en samlet Lighthouse score på 100 i alle kategorier.
+- **VIS-02-NF-014:** Søgefunktionen skal returnere resultater på under 2 sekunder. (dækker: VIS-02-UC01, VIS-02-UC02)
+- **VIS-02-NF-015:** Søgeresultater skal rangordnes efter relevans. (dækker: VIS-02-UC01, VIS-02-UC02)
+- **VIS-02-NF-016:** Søgefunktionen må ikke afsløre interne fejl (fx SQL-fejl) i brugerfladen. (dækker: VIS-02-UC01, VIS-02-UC02)
+- **VIS-02-NF-017:** Søgefunktionen skal være tilgængelig via HTTPS. (dækker: VIS-02-UC01, VIS-02-UC02)
+- **VIS-02-NF-018:** Søgeresultat-siden skal bidrage til en samlet Lighthouse score på 100 i alle kategorier. (dækker: VIS-02-UC01, VIS-02-UC02)
+
+---
 
 ### 📈 Marketing – Opdatere indhold (US-03)
 **Som Marketing-medarbejder vil jeg kunne opdatere indhold på hjemmesiden, så kampagner og information altid er aktuelle.**
 
-#### Use Case – Opdatere indhold
-- **MAR-FK-03-027:** Marketing har adgang til et redigeringsværktøj
-- **MAR-FK-03-028:** Marketing kan upload billeder, som de kan bruge i indhold på siderne
-- **MAR-FK-03-029:** Marketing kan tilføje, redigere og slette sider.
-- **MAR-FK-03-030:** Marketing kan preview og publish siderne. Hvis indholdet ikke kan valideres → systemet giver en fejlbesked.
+#### Use Cases
+- **MAR-03-UC01 – Uploade billeder**
+  - **Aktør:** Marketing
+  - **Forudsætning:** Marketing er logget ind i redigeringsværktøjet; filpolitik er defineret (type/størrelse/dimensioner).
+  - **Trigger/Mål:** Tilføje et billede til brug i indhold.
+  - **Hovedforløb:** 1) Marketing vælger 'Upload billede'. 2) Systemet validerer filtype og størrelse. 3) Systemet gemmer billedet og viser en URL/preview.
+  - **Udvidelser/Fejl:** a) Fil for stor/ulovlig type → afvisning med regelbesked. b) Netværksfejl → upload kan genoptages.
+- **MAR-03-UC02 – Tilføje, redigere og slette indhold**
+  - **Aktør:** Marketing
+  - **Forudsætning:** CMS-lignende værktøj er tilgængeligt; bruger har rettigheder.
+  - **Trigger/Mål:** Vedligeholde sider og kampagnetekster.
+  - **Hovedforløb:** 1) Marketing opretter en ny side eller vælger en eksisterende. 2) Marketing redigerer tekst/billeder og gemmer som kladde. 3) Marketing kan slette en side → flyttes til arkiv.
+  - **Udvidelser/Fejl:** a) Validering fejler → fejlmarkering på felter. b) Gendannelse fra arkiv er mulig.
+- **MAR-03-UC03 – Preview og publicering**
+  - **Aktør:** Marketing
+  - **Forudsætning:** Der findes en kladdeversion; preview-miljø er online.
+  - **Trigger/Mål:** Kvalitetssikre og gøre ændringer live uden nedetid.
+  - **Hovedforløb:** 1) Marketing åbner preview-URL for kladden. 2) Marketing gennemser og godkender indhold. 3) Marketing vælger 'Publicer'. 4) Systemet publicerer ændringer med zero downtime.
+  - **Udvidelser/Fejl:** a) Validering fejler → publicering afvises. b) Publicering fejler → automatisk rollback og besked.
 
 #### Funktionelle krav
-- **MAR-FK-03-031:** Systemet skal understøtte opdatering af eksisterende tekstindhold.
-- **MAR-FK-03-032:** Systemet skal understøtte upload og visning af billeder.
-- **MAR-FK-03-033:** Systemet skal sikre, at ændringer kan ses i et *preview-miljø* inden publicering.
-- **MAR-FK-03-034:** Systemet skal publicere ændringer til hjemmesiden uden nedetid.
+- **MAR-03-FK-019:** Systemet skal give adgang til et CMS, hvor Marketing-brugere kan logge ind for at opdatere indhold. (dækker: MAR-03-UC02)
+- **MAR-03-FK-020:** Systemet skal understøtte opdatering af eksisterende tekstindhold. (dækker: MAR-03-UC02)
+- **MAR-03-FK-021:** Systemet skal understøtte upload og visning af billeder. (dækker: MAR-03-UC01)
+- **MAR-03-FK-022:** Systemet skal sikre, at ændringer kan ses i et *preview-miljø* inden publicering. (dækker: MAR-03-UC03)
+- **MAR-03-FK-023:** Systemet skal publicere ændringer til hjemmesiden uden nedetid. (dækker: MAR-03-UC02, MAR-03-UC03)
 
 #### Ikke-funktionelle krav
-- **MAR-NF-03-035:** Udrulning af ændringer skal ske med zero downtime.
-- **MAR-NF-03-036:** Indholdsændringer skal kunne ses af Visitors senest 1 minut efter publicering.
-- **MAR-NF-03-037:** Preview-miljøet skal være isoleret fra produktion, men afspejle samme design og performance.
-- **MAR-NF-03-038:** Preview og publicering skal kun ske via HTTPS.
-- **MAR-NF-03-039:** Opdateringer skal ikke kompromittere performance eller Lighthouse score (100 i alle kategorier).
+- **MAR-03-NF-024:** Udrulning af ændringer skal ske med zero downtime. (dækker: MAR-03-UC02)
+- **MAR-03-NF-025:** Indholdsændringer skal kunne ses af Visitors senest 1 minut efter publicering. (dækker: MAR-03-UC02, MAR-03-UC03)
+- **MAR-03-NF-026:** Preview-miljøet skal være isoleret fra produktion, men afspejle samme design og performance. (dækker: MAR-03-UC03)
+- **MAR-03-NF-027:** Preview og publicering skal kun ske via HTTPS. (dækker: MAR-03-UC03)
+- **MAR-03-NF-028:** Opdateringer skal ikke kompromittere performance eller Lighthouse score (100 i alle kategorier). (dækker: MAR-03-UC02)
 
 ---
 
 ### 📈 Marketing – Se statistik (US-04)
 **Som Marketing-medarbejder vil jeg kunne se statistik over besøg og brugeradfærd, så jeg kan vurdere effekten af kampagner.**
 
-#### Use Case – Se statistik
-- **MAR-FK-04-040:** Marketing
-- **MAR-FK-04-041:** Sitet indsamler basis-analyse data (fx page views).
-- **MAR-FK-04-042:**
-  1. Marketing åbner statistikværktøjet.
-  2. Systemet viser rapporter over sidevisninger og søgeadfærd.
-  3. Marketing bruger informationen til at evaluere kampagner.
-- **MAR-FK-04-043:**
-  - Hvis data ikke er tilgængelige → systemet viser en fejlbesked og logger fejlen.
+#### Use Cases
+- **MAR-04-UC01 – Se rapport over sidevisninger**
+  - **Aktør:** Marketing
+  - **Forudsætning:** Analytics-data indsamles.
+  - **Trigger/Mål:** Evaluere effekt af kampagner.
+  - **Hovedforløb:** 1) Marketing åbner rapport-siden. 2) Systemet henter og viser aggregerede sidevisninger. 3) Marketing identificerer top-sider.
+  - **Udvidelser/Fejl:** a) Ingen data → tom-tilstand med forklaring. b) Datakilde nede → fejl logges og mild besked vises.
+- **MAR-04-UC02 – Filtrere statistik**
+  - **Aktør:** Marketing
+  - **Forudsætning:** Analytics-data indsamles.
+  - **Trigger/Mål:** Afgrænse data til relevant periode.
+  - **Hovedforløb:** 1) Marketing vælger periode (dag/uge/måned). 2) Systemet filtrerer og opdaterer grafer/tabeller. 3) Marketing eksporterer evt. som CSV.
+  - **Udvidelser/Fejl:** a) Ugyldig periode → standardperiode anvendes.
 
 #### Funktionelle krav
-- **MAR-FK-04-044:** Systemet skal indsamle og gemme data om sidevisninger.
-- **MAR-FK-04-045:** Systemet skal vise simple rapporter (fx mest besøgte sider, hyppige søgeord).
-- **MAR-FK-04-046:** Systemet skal give mulighed for at filtrere rapporter efter periode (fx dag/uge/måned).
+- **MAR-04-FK-029:** Systemet skal indsamle og gemme data om sidevisninger. (dækker: MAR-04-UC01)
+- **MAR-04-FK-030:** Systemet skal vise simple rapporter (fx mest besøgte sider, hyppige søgeord). (dækker: MAR-04-UC01)
+- **MAR-04-FK-031:** Systemet skal give mulighed for at filtrere rapporter efter periode (fx dag/uge/måned). (dækker: MAR-04-UC01, MAR-04-UC02)
 
 #### Ikke-funktionelle krav
-- **MAR-NF-04-047:** Statistik skal være tilgængelig uden at påvirke performance for Visitors.
-- **MAR-NF-04-048:** Statistikdata skal opdateres mindst én gang i timen.
-- **MAR-NF-04-049:** Statistikvisningen skal kun være tilgængelig via HTTPS og kræve autentifikation.
-- **MAR-NF-04-050:** Statistikmodulet skal ikke påvirke hjemmesidens Lighthouse score (100 i alle kategorier).
+- **MAR-04-NF-032:** Statistik skal være tilgængelig uden at påvirke performance for Visitors. (dækker: MAR-04-UC01)
+- **MAR-04-NF-033:** Statistikdata skal opdateres mindst én gang i timen. (dækker: MAR-04-UC01)
+- **MAR-04-NF-034:** Statistikvisningen skal kun være tilgængelig via HTTPS og kræve autentifikation. (dækker: MAR-04-UC01)
+- **MAR-04-NF-035:** Statistikmodulet skal ikke påvirke hjemmesidens Lighthouse score (100 i alle kategorier). (dækker: MAR-04-UC01)
 
 ### 💻 Udvikler – Tilføje funktionalitet (US-05)
 **Som Udvikler vil jeg kunne tilføje ny funktionalitet til hjemmesiden, så systemet kan udvikles og forbedres løbende.**
 
-#### Use Case – Tilføje funktioner
-- **DEV-FK-05-051:** Udvikler
-- **DEV-FK-05-052:** Udvikleren arbejder i et versionsstyringssystem (fx Git).
-- **DEV-FK-05-053:**
-  1. Udvikler planlægger en ny funktion på Kanban/Scrum board.
-  2. Tasken på boardet refererer til et konkret krav i kravspecifikationen.
-  3. Udvikler opretter en ny gren (branch) i versionsstyring.
-  4. Udvikler implementerer og tester funktionen i et testmiljø.
-  5. E2E-tests og code review køres.
-  6. Funktionen merges til hovedbranch, hvis tests og review er godkendt.
-- **DEV-FK-05-054:**
-  - Hvis test fejler → ændringen må ikke merges til hovedbranch.
+#### Use Cases
+- **DEV-05-UC01 – Arbejde i Git (branch → PR/merge)**
+  - **Aktør:** Udvikler
+  - **Forudsætning:** Adgang til repo; aftalt branching-strategi.
+  - **Trigger/Mål:** Udvikle ændringer sporbar og sikkert.
+  - **Hovedforløb:** 1) Udvikler opretter branch fra main. 2) Commits følger konvention; pushes. 3) Pull request oprettes og reviewes. 4) Merge til main ved godkendt review.
+  - **Udvidelser/Fejl:** a) Review afviser → ændringer rettes. b) Merge-konflikt → løses på branch.
+- **DEV-05-UC02 – Køre E2E tests i testmiljø**
+  - **Aktør:** Udvikler
+  - **Forudsætning:** Testmiljø spejler produktion; E2E-suit er defineret.
+  - **Trigger/Mål:** Sikre at kritiske flows virker før produktion.
+  - **Hovedforløb:** 1) Udvikler deployer branch til testmiljø. 2) E2E-tests eksekveres automatisk. 3) Resultater gennemgås og fejl udbedres.
+  - **Udvidelser/Fejl:** a) Tests overstiger tidsbudget → fejler og markeres. b) Flaky test → flages til stabilisering.
 
 #### Funktionelle krav
-- **DEV-FK-05-055:** Systemet skal bruge versionsstyring (fx Git) til alt kodearbejde.
-- **DEV-FK-05-056:** Systemet skal understøtte branches til udvikling og integration.
-- **DEV-FK-05-057:** Systemet skal have et Kanban- eller Scrum board til planlægning og opgavestyring.
-- **DEV-FK-05-058:** Alle tasks på Kanban/Scrum boardet skal kunne henføres til et eller flere krav i kravspecifikationen.
-- **DEV-FK-05-059:** Nye funktioner skal kunne testes i et separat testmiljø inden de udrulles.
-- **DEV-FK-05-060:** Systemet skal køre automatiserede E2E-tests på ændringer før produktion.
+- **DEV-05-FK-036:** Systemet skal bruge versionsstyring (fx Git) til alt kodearbejde. (dækker: DEV-05-UC01)
+- **DEV-05-FK-037:** Systemet skal understøtte branches til udvikling og integration. (dækker: DEV-05-UC01)
+- **DEV-05-FK-038:** Systemet skal have et Kanban- eller Scrum board til planlægning og opgavestyring. (dækker: DEV-05-UC01)
+- **DEV-05-FK-039:** Alle tasks på Kanban/Scrum boardet skal kunne henføres til et eller flere krav i kravspecifikationen. (dækker: DEV-05-UC01)
+- **DEV-05-FK-040:** Nye funktioner skal kunne testes i et separat testmiljø inden de udrulles. (dækker: DEV-05-UC02)
+- **DEV-05-FK-041:** Systemet skal køre automatiserede E2E-tests på ændringer før produktion. (dækker: DEV-05-UC02)
 
 #### Ikke-funktionelle krav
-- **DEV-NF-05-061:** Alle commits skal følge en aftalt versionsstrategi (fx semantisk versionering).
-- **DEV-NF-05-062:** Udviklingsteamet skal følge en fælles Code of Conduct for samarbejde og kommunikation.
-- **DEV-NF-05-063:** Testmiljøet skal afspejle produktionen, så fejl kan opdages tidligt.
-- **DEV-NF-05-064:** E2E-tests skal fuldføres på under 5 minutter for at understøtte hurtig feedback.
-- **DEV-NF-05-065:** Versionshistorik skal bevares, så tidligere versioner altid kan gendannes.
+- **DEV-05-NF-042:** Alle commits skal følge en aftalt versionsstrategi (fx semantisk versionering). (dækker: DEV-05-UC01)
+- **DEV-05-NF-043:** Udviklingsteamet skal følge en fælles Code of Conduct for samarbejde og kommunikation. (dækker: DEV-05-UC01, DEV-05-UC02)
+- **DEV-05-NF-044:** Testmiljøet skal afspejle produktionen, så fejl kan opdages tidligt. (dækker: DEV-05-UC02)
+- **DEV-05-NF-045:** E2E-tests skal fuldføres på under 5 minutter for at understøtte hurtig feedback. (dækker: DEV-05-UC02)
+- **DEV-05-NF-046:** Versionshistorik skal bevares, så tidligere versioner altid kan gendannes. (dækker: DEV-05-UC01)
 
 ### 💻🖥️ Udvikler & Infrastruktur – Dokumentere proces og overholdelse af krav (US-06)
 **Som Udvikler/Infrastruktur-team vil vi kunne dokumentere vores arkitekturvalg og løbende opdatere et oversigtsdokument, så vi kan vise hvordan systemet opfylder de opstillede krav.**
 
-#### Use Case – Dokumentation af proces og krav
-- **DIN-FK-06-066:** Udvikler + Infrastruktur
-- **DIN-FK-06-067:** Projektet har en fælles kravspecifikation.
-- **DIN-FK-06-068:**
-  1. Teamet træffer et teknisk eller arkitektonisk valg (fx valg af webserver, deploy-strategi).
-  2. Valget dokumenteres kortfattet med begrundelse i et procesdokument (fx README eller wiki).
-  3. Teamet markerer i kravspecifikationen, hvilke krav valget understøtter.
-  4. Når krav ændres eller nye tilføjes, opdateres dokumentationen.
-- **DIN-FK-06-069:**
-  - Hvis et krav ikke kan opfyldes → teamet beskriver hvorfor, og foreslår en alternativ løsning.
+#### Use Cases
+- **DIN-06-UC01 – Dokumentere arkitekturvalg**
+  - **Aktør:** Udvikler & Infrastruktur
+  - **Forudsætning:** Skabelon for beslutningslog (ADR) er tilgængelig.
+  - **Trigger/Mål:** Begrunde tekniske valg og sporbarhed.
+  - **Hovedforløb:** 1) Teamet beskriver valget (hvad/hvorfor/alternativer). 2) Linker til relaterede krav og tickets. 3) Publicerer noten i repo/wiki.
+  - **Udvidelser/Fejl:** a) Valg forældes → markeres erstattet. b) Uenighed → note afspejler kompromis og konsekvenser.
+- **DIN-06-UC02 – Opdatere krav-overholdelse**
+  - **Aktør:** Udvikler & Infrastruktur
+  - **Forudsætning:** Kravoversigt findes i repo.
+  - **Trigger/Mål:** Holde styr på hvilke krav systemet opfylder.
+  - **Hovedforløb:** 1) Teamet evaluerer status pr. iteration. 2) Opdaterer krydsliste (krav ↔ funktion/komponent). 3) Committer opdateringen.
+  - **Udvidelser/Fejl:** a) Krav kan ikke opfyldes nu → note med begrundelse og plan.
 
 #### Funktionelle krav
-- **DIN-FK-06-070:** Teamet skal dokumentere arkitekturvalg med begrundelser i et procesdokument.
-- **DIN-FK-06-071:** Teamet skal føre en oversigt over, hvilke krav der er opfyldt af systemet.
-- **DIN-FK-06-072:** Dokumentationen skal løbende opdateres, når systemet ændres.
-- **DIN-FK-06-073:** Dokumentationen skal være tilgængelig for alle aktører i projektet (f.eks. i Git-repo).
+- **DIN-06-FK-047:** Teamet skal dokumentere arkitekturvalg med begrundelser i et procesdokument. (dækker: DIN-06-UC01)
+- **DIN-06-FK-048:** Teamet skal føre en oversigt over, hvilke krav der er opfyldt af systemet. (dækker: DIN-06-UC02)
+- **DIN-06-FK-049:** Dokumentationen skal løbende opdateres, når systemet ændres. (dækker: DIN-06-UC01, DIN-06-UC02)
+- **DIN-06-FK-050:** Dokumentationen skal være tilgængelig for alle aktører i projektet (f.eks. i Git-repo). (dækker: DIN-06-UC01, DIN-06-UC02)
 
 #### Ikke-funktionelle krav
-- **DIN-NF-06-074:** Dokumentationen skal være enkel, kortfattet og konsistent i struktur (max ½ side per beslutning).
-- **DIN-NF-06-075:** Oversigten over krav skal opdateres mindst én gang per iteration/sprint.
-- **DIN-NF-06-076:** Dokumentationen skal være versionsstyret (gemmes i Git).
-- **DIN-NF-06-077:** Processen for dokumentation må ikke forsinke udvikling/udrulning væsentligt (maks. 10 min. pr. arkitekturvalg).
+- **DIN-06-NF-051:** Dokumentationen skal være enkel, kortfattet og konsistent i struktur (max ½ side per beslutning). (dækker: DIN-06-UC01, DIN-06-UC02)
+- **DIN-06-NF-052:** Oversigten over krav skal opdateres mindst én gang per iteration/sprint. (dækker: DIN-06-UC02)
+- **DIN-06-NF-053:** Dokumentationen skal være versionsstyret (gemmes i Git). (dækker: DIN-06-UC01, DIN-06-UC02)
+- **DIN-06-NF-054:** Processen for dokumentation må ikke forsinke udvikling/udrulning væsentligt (maks. 10 min. pr. arkitekturvalg). (dækker: DIN-06-UC01)
 
 ### 🖥️ Infrastruktur – Deployment (US-07)
 **Som Infrastruktur-ansvarlig vil jeg kunne deploye systemet med en strategi der sikrer zero downtime, så hjemmesiden altid er tilgængelig for brugerne.**
 
-#### Use Case – Deployment
-- **INF-FK-07-078:** Infrastruktur
-- **INF-FK-07-079:** Systemet er klar til udrulning fra versionsstyring.
-- **INF-FK-07-080:**
-  1. Infrastruktur vælger en deploy-strategi (Blue/Green, Rolling, Canary).
-  2. Deployment udføres uden nedetid.
-  3. Hvis deployment fejler → rollback udføres automatisk.
+#### Use Cases
+- **INF-07-UC01 – Blue/Green deployment**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** To miljøer (Blue/Green) er provisioneret; healthcheck findes.
+  - **Trigger/Mål:** Udrulle ny version uden nedetid.
+  - **Hovedforløb:** 1) Ny version deployes til inaktivt miljø. 2) Healthchecks passerer. 3) Trafik skiftes til nyt miljø. 4) Gammelt miljø holdes som fallback.
+  - **Udvidelser/Fejl:** a) Healthcheck fejler → ingen trafikskifte. b) Post-switch fejl → rull tilbage.
+- **INF-07-UC02 – Rollback deployment**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** Forrige version er bevaret og sund.
+  - **Trigger/Mål:** Gendanne tidligere version hurtigt.
+  - **Hovedforløb:** 1) Initier rollback. 2) Trafik skiftes tilbage til forrige miljø. 3) Fejlårsag registreres.
+  - **Udvidelser/Fejl:** a) Rollback fejler → eskalér og sæt read-only banner.
 
 #### Funktionelle krav
-- **INF-FK-07-081:** Systemet skal understøtte zero downtime deployment.
-- **INF-FK-07-082:** Deployment-processen skal have en rollback-mekanisme.
+- **INF-07-FK-055:** Systemet skal understøtte zero downtime deployment. (dækker: INF-07-UC01)
+- **INF-07-FK-056:** Deployment-processen skal have en rollback-mekanisme. (dækker: INF-07-UC01, INF-07-UC02)
 
 #### Ikke-funktionelle krav
-- **INF-NF-07-083:** Deployment skal kunne gennemføres på under 5 minutter.
-- **INF-NF-07-084:** Rollback skal kunne gennemføres på under 2 minutter.
+- **INF-07-NF-057:** Deployment skal kunne gennemføres på under 5 minutter. (dækker: INF-07-UC01)
+- **INF-07-NF-058:** Rollback skal kunne gennemføres på under 2 minutter. (dækker: INF-07-UC02)
 
 ---
 
 ### 🖥️ Infrastruktur – Overvågning (US-08)
 **Som Infrastruktur-ansvarlig vil jeg kunne overvåge servere og services, så jeg hurtigt kan reagere på fejl eller nedbrud.**
 
-#### Use Case – Overvågning
-- **INF-FK-08-085:** Infrastruktur
-- **INF-FK-08-086:** Systemet kører i produktion.
-- **INF-FK-08-087:**
-  1. Systemet opsamler data om servere og services (CPU, RAM, disk, netværk, svartider).
-  2. Systemet genererer alarmer ved fejl eller nedbrud.
-  3. Infrastruktur modtager og reagerer på alarmer.
+#### Use Cases
+- **INF-08-UC01 – Opsamle metrics og kontroller**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** Agent eller exporter er installeret; endpoints defineret.
+  - **Trigger/Mål:** Se sundhedstilstand og svartider.
+  - **Hovedforløb:** 1) Metrics indsamles (CPU, RAM, disk, netværk, HTTP). 2) Dashboards viser status. 3) SLA/SLO vises.
+  - **Udvidelser/Fejl:** a) Manglende data → alert på datatab. b) Forkerte thresholds → justeres.
+- **INF-08-UC02 – Generere og formidle alarmer**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** Alert-regler er konfigureret; kontaktkanaler sat op.
+  - **Trigger/Mål:** Få besked om hændelser hurtigt.
+  - **Hovedforløb:** 1) Metrics evalueres mod regler. 2) Alarm genereres og sendes til kanal (mail/chat). 3) On-call kvitterer modtagelse.
+  - **Udvidelser/Fejl:** a) Støjende alarm → regel tunes. b) Eskalering ved manglende kvittering.
 
 #### Funktionelle krav
-- **INF-FK-08-088:** Systemet skal overvåge servere og services.
-- **INF-FK-08-089:** Systemet skal generere alarmer ved fejl, nedbrud eller ressourceoverskridelse.
+- **INF-08-FK-059:** Systemet skal overvåge servere og services. (dækker: INF-08-UC01)
+- **INF-08-FK-060:** Systemet skal generere alarmer ved fejl, nedbrud eller ressourceoverskridelse. (dækker: INF-08-UC02)
 
 #### Ikke-funktionelle krav
-- **INF-NF-08-090:** Overvågning skal ske med maks. 1 minuts forsinkelse.
-- **INF-NF-08-091:** Alarmer skal være tilgængelige for drift/SOC senest 30 sekunder efter fejl registreres.
+- **INF-08-NF-061:** Overvågning skal ske med maks. 1 minuts forsinkelse. (dækker: INF-08-UC01)
+- **INF-08-NF-062:** Alarmer skal være tilgængelige for drift/SOC senest 30 sekunder efter fejl registreres. (dækker: INF-08-UC02)
 
 ---
 
 ### 🖥️ Infrastruktur – Backup (US-09)
 **Som Infrastruktur-ansvarlig vil jeg kunne lave backup og gendanne systemet, så data og funktioner ikke går tabt ved fejl eller nedbrud.**
 
-#### Use Case – Backup
-- **INF-FK-09-092:** Infrastruktur
-- **INF-FK-09-093:** Systemet er i drift med kode og data.
-- **INF-FK-09-094:**
-  1. Systemet tager automatiske backups af kode og data.
-  2. Backups gemmes sikkert og kan testes.
-  3. Systemet gendannes fra backup ved behov.
+#### Use Cases
+- **INF-09-UC01 – Planlagt backup**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** Backupmål og retention er konfigureret.
+  - **Trigger/Mål:** Sikre gendannelsesmulighed.
+  - **Hovedforløb:** 1) Scheduler kører backup af kode og data. 2) Backup verificeres (checksum/size). 3) Backup kopieres offsite.
+  - **Udvidelser/Fejl:** a) Manglende plads → ældste backup prunes. b) Fejl → alarm og retry.
+- **INF-09-UC02 – Gendannelse fra backup**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** Valid backup findes; restore-procedure dokumenteret.
+  - **Trigger/Mål:** Genskabe systemet.
+  - **Hovedforløb:** 1) Vælg relevant backup. 2) Restore til staging/test. 3) Valider data og funktion. 4) Evt. promote til produktion.
+  - **Udvidelser/Fejl:** a) Inkompatibel backup → abort og vælg anden. b) Delvis korruption → gendan selektivt.
 
 #### Funktionelle krav
-- **INF-FK-09-095:** Systemet skal tage regelmæssige backups af kode og data.
-- **INF-FK-09-096:** Systemet skal understøtte restore/gendannelse fra backup.
-- **INF-FK-09-097:** Backup-processen skal testes regelmæssigt.
+- **INF-09-FK-063:** Systemet skal tage regelmæssige backups af kode og data. (dækker: INF-09-UC01)
+- **INF-09-FK-064:** Systemet skal understøtte restore/gendannelse fra backup. (dækker: INF-09-UC01, INF-09-UC02)
+- **INF-09-FK-065:** Backup-processen skal testes regelmæssigt. (dækker: INF-09-UC01)
 
 #### Ikke-funktionelle krav
-- **INF-NF-09-098:** Backup skal tages mindst én gang i døgnet.
-- **INF-NF-09-099:** Backup skal testes mindst én gang om ugen.
+- **INF-09-NF-066:** Backup skal tages mindst én gang i døgnet. (dækker: INF-09-UC01)
+- **INF-09-NF-067:** Backup skal testes mindst én gang om ugen. (dækker: INF-09-UC01)
 
 ---
 
 ### 🖥️ Infrastruktur – Dokumentation (US-10)
 **Som Infrastruktur-ansvarlig vil jeg kunne dokumentere vores arkitektur og drift, så alle aktører har et fælles overblik over systemet.**
 
-#### Use Case – Dokumentation
-- **INF-FK-10-100:** Infrastruktur
-- **INF-FK-10-101:** Projektet har en fælles kravspecifikation og versionsstyring.
-- **INF-FK-10-102:**
-  1. Infrastruktur planlægger drift- og vedligeholdelsesopgaver på Kanban board.
-  2. Alle tasks linkes til kravspecifikationen.
-  3. Infrastruktur udarbejder nødvendige diagrammer og beskrivelser.
-  4. Dokumentationen gemmes versionsstyret i Git og opdateres løbende.
+#### Use Cases
+- **INF-10-UC01 – Udarbejde netværksdiagram**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** Værktøj og konventioner er valgt.
+  - **Trigger/Mål:** Skabe overblik over forbindelser.
+  - **Hovedforløb:** 1) Identificer noder og forbindelser. 2) Tegn L3/L7 flows inkl. WAF/LB. 3) Gem i repo og vis i dokumentation.
+  - **Udvidelser/Fejl:** a) Ændringer i infra → diagram opdateres.
+- **INF-10-UC02 – Opdatere komponent- og deployment-diagrammer**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** Komponentliste er opdateret.
+  - **Trigger/Mål:** Visualisere systemets opbygning og deploy-strømme.
+  - **Hovedforløb:** 1) Tegn komponentdiagram (moduler, DB, lager). 2) Tegn deploymentdiagram (miljøer, pods, services). 3) Publicér i repo.
+  - **Udvidelser/Fejl:** a) Uoverensstemmelse → synk med kildefiler.
+- **INF-10-UC03 – Dokumentere driftsprocesser**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** Skabeloner findes for procesdokumenter.
+  - **Trigger/Mål:** Gøre drift reproducerbar.
+  - **Hovedforløb:** 1) Skriv processer for deploy, overvågning, backup. 2) Link til scripts og tjeklister. 3) Vedligehold versionshistorik.
+  - **Udvidelser/Fejl:** a) Processer forældes → review-kadence pr. måned.
+- **INF-10-UC04 – Planlægge og spore tasks i Kanban**
+  - **Aktør:** Infrastruktur
+  - **Forudsætning:** Kanban board er oprettet; kravspec er tilgængelig.
+  - **Trigger/Mål:** Sikre sporbarhed krav ↔ opgave.
+  - **Hovedforløb:** 1) Opret task og link til krav-ID. 2) Følg status til 'Done'. 3) Luk task med reference til commit/deploy.
+  - **Udvidelser/Fejl:** a) Opgave uden krav-link → afvises.
 
 #### Funktionelle krav
-- **INF-FK-10-103:** Infrastruktur skal dokumentere netværksantologi (netværksdiagram).
-- **INF-FK-10-104:** Infrastruktur skal dokumentere komponent- og deployment-diagrammer.
-- **INF-FK-10-105:** Infrastruktur skal dokumentere driftprocesser (deployment, overvågning, backup).
-- **INF-FK-10-106:** Infrastruktur skal bruge et Kanban board til planlægning af tasks.
-- **INF-FK-10-107:** Alle infrastruktur-tasks på Kanban boardet skal kunne henføres til et eller flere krav i kravspecifikationen.
+- **INF-10-FK-068:** Infrastruktur skal dokumentere netværksantologi (netværksdiagram). (dækker: INF-10-UC01)
+- **INF-10-FK-069:** Infrastruktur skal dokumentere komponent- og deployment-diagrammer. (dækker: INF-10-UC02)
+- **INF-10-FK-070:** Infrastruktur skal dokumentere driftprocesser (deployment, overvågning, backup). (dækker: INF-10-UC02, INF-10-UC03)
+- **INF-10-FK-071:** Infrastruktur skal bruge et Kanban board til planlægning af tasks. (dækker: INF-10-UC04)
+- **INF-10-FK-072:** Alle infrastruktur-tasks på Kanban boardet skal kunne henføres til et eller flere krav i kravspecifikationen. (dækker: INF-10-UC04)
 
 #### Ikke-funktionelle krav
-- **INF-NF-10-108:** Dokumentationen skal være enkel, kortfattet og opdateres løbende.
-- **INF-NF-10-109:** Dokumentationen skal være versionsstyret (fx i Git).
-- **INF-NF-10-110:** Dokumentationen må maks. tage 10 min. at opdatere pr. ændring.
+- **INF-10-NF-073:** Dokumentationen skal være enkel, kortfattet og opdateres løbende. (dækker: INF-10-UC01, INF-10-UC02, INF-10-UC03, INF-10-UC04)
+- **INF-10-NF-074:** Dokumentationen skal være versionsstyret (fx i Git). (dækker: INF-10-UC01, INF-10-UC02, INF-10-UC03, INF-10-UC04)
+- **INF-10-NF-075:** Dokumentationen må maks. tage 10 min. at opdatere pr. ændring. (dækker: INF-10-UC01, INF-10-UC02, INF-10-UC03, INF-10-UC04)
 
 ### 🛡️ SOC – Logindsamling (US-11)
 **Som SOC-ansvarlig vil jeg kunne indsamle og gemme logs fra systemet, så jeg kan opdage og analysere sikkerhedshændelser.**
 
-#### Use Case – Logindsamling
-- **SOC-FK-11-111:** SOC
-- **SOC-FK-11-112:** Systemet er i drift og genererer logs.
-- **SOC-FK-11-113:**
-  1. SOC konfigurerer central logindsamling (fx webserver-, applikations- og systemlogs).
-  2. Logs sendes til et sikkert centralt logsystem.
-  3. Logs gemmes i minimum 30 dage.
-  4. SOC kan søge i og filtrere logs.
+#### Use Cases
+- **SOC-11-UC01 – Opsamle logs**
+  - **Aktør:** SOC
+  - **Forudsætning:** Logkilder og transport (TLS) er konfigureret.
+  - **Trigger/Mål:** Centralisere logs for analyse.
+  - **Hovedforløb:** 1) Web-, app- og systemlogs sendes til central lagring. 2) Indeksering muliggør søgning. 3) Retention-politik håndhæves.
+  - **Udvidelser/Fejl:** a) Kilde mangler → alarm. b) Tidsstempler ude af sync → NTP justeres.
 
 #### Funktionelle krav
-- **SOC-FK-11-114:** Systemet skal indsamle logs fra servere, services og applikationen.
-- **SOC-FK-11-115:** Logs skal sendes til et centralt system.
-- **SOC-FK-11-116:** Logs skal gemmes i minimum 30 dage.
+- **SOC-11-FK-076:** Systemet skal indsamle logs fra servere, services og applikationen. (dækker: SOC-11-UC01)
+- **SOC-11-FK-077:** Logs skal sendes til et centralt system. (dækker: SOC-11-UC01)
+- **SOC-11-FK-078:** Logs skal gemmes i minimum 30 dage. (dækker: SOC-11-UC01)
 
 #### Ikke-funktionelle krav
-- **SOC-NF-11-117:** Logs skal overføres krypteret.
-- **SOC-NF-11-118:** Logs skal være søgbare inden for 1 minut efter de er oprettet.
+- **SOC-11-NF-079:** Logs skal overføres krypteret. (dækker: SOC-11-UC01)
+- **SOC-11-NF-080:** Logs skal være søgbare inden for 1 minut efter de er oprettet. (dækker: SOC-11-UC01)
 
 ---
 
 ### 🛡️ SOC – Alarmhåndtering (US-12)
 **Som SOC-ansvarlig vil jeg kunne modtage og håndtere alarmer, så jeg hurtigt kan reagere på sikkerhedshændelser.**
 
-#### Use Case – Alarmhåndtering
-- **SOC-FK-12-119:** SOC
-- **SOC-FK-12-120:** Logindsamling og overvågning er opsat.
-- **SOC-FK-12-121:**
-  1. Systemet genererer en alarm (fx gentagne loginforsøg, DoS, XSS-forsøg).
-  2. Alarmen sendes til SOC.
-  3. SOC vurderer alarmen og kategoriserer den (fx kritisk, høj, middel, lav).
-  4. SOC eskalerer hændelsen efter procedurer.
+#### Use Cases
+- **SOC-12-UC01 – Modtage og kategorisere alarmer**
+  - **Aktør:** SOC
+  - **Forudsætning:** Regler og alvorlighedsniveauer defineret.
+  - **Trigger/Mål:** Sikre prioriteret respons.
+  - **Hovedforløb:** 1) SOC modtager alarm. 2) Kategoriserer (kritisk/høj/middel/lav). 3) Opretter incident-ticket.
+  - **Udvidelser/Fejl:** a) Falsk positiv → regel justeres.
 
 #### Funktionelle krav
-- **SOC-FK-12-122:** Systemet skal generere alarmer baseret på definerede sikkerhedsmønstre.
-- **SOC-FK-12-123:** Alarmer skal kategoriseres efter alvorlighed.
+- **SOC-12-FK-081:** Systemet skal generere alarmer baseret på definerede sikkerhedsmønstre. (dækker: SOC-12-UC01)
+- **SOC-12-FK-082:** Alarmer skal kategoriseres efter alvorlighed. (dækker: SOC-12-UC01)
 
 #### Ikke-funktionelle krav
-- **SOC-NF-12-124:** Alarmer skal være tilgængelige for SOC senest 30 sekunder efter registrering.
-- **SOC-NF-12-125:** Alarmer må ikke overses (skal logges centralt og markeres som “behandlet”).
+- **SOC-12-NF-083:** Alarmer skal være tilgængelige for SOC senest 30 sekunder efter registrering. (dækker: SOC-12-UC01)
+- **SOC-12-NF-084:** Alarmer må ikke overses (skal logges centralt og markeres som “behandlet”). (dækker: SOC-12-UC01)
 
 ---
 
 ### 🛡️ SOC – Incident Response (US-13)
 **Som SOC-ansvarlig vil jeg kunne reagere på sikkerhedshændelser, så systemet hurtigt kan sikres og gendannes.**
 
-#### Use Case – Incident Response
-- **SOC-FK-13-126:** SOC
-- **SOC-FK-13-127:** En alarm er registreret.
-- **SOC-FK-13-128:**
-  1. SOC identificerer hændelsen via alarmer og logs.
-  2. SOC aktiverer en responsprocedure (fx blokering af IP, nedlukning af service).
-  3. SOC dokumenterer hændelsen og tiltag.
-  4. Systemet gendannes til normal drift.
+#### Use Cases
+- **SOC-13-UC01 – Reagere på hændelse**
+  - **Aktør:** SOC
+  - **Forudsætning:** Incident playbooks er tilgængelige.
+  - **Trigger/Mål:** Begrænse og afhjælpe hændelsen hurtigt.
+  - **Hovedforløb:** 1) SOC identificerer scope via logs. 2) Iværksætter modforanstaltning (blokering, isolering). 3) Dokumenterer hændelse og lessons learned.
+  - **Udvidelser/Fejl:** a) Behov for eskalering → kontakt drift/ledelse.
 
 #### Funktionelle krav
-- **SOC-FK-13-129:** SOC skal kunne iværksætte afværgeforanstaltninger (fx blokering via WAF/firewall).
-- **SOC-FK-13-130:** SOC skal dokumentere hændelser og respons.
+- **SOC-13-FK-085:** SOC skal kunne iværksætte afværgeforanstaltninger (fx blokering via WAF/firewall). (dækker: SOC-13-UC01)
+- **SOC-13-FK-086:** SOC skal dokumentere hændelser og respons. (dækker: SOC-13-UC01)
 
 #### Ikke-funktionelle krav
-- **SOC-NF-13-131:** Incident response skal iværksættes inden for 5 minutter ved kritiske hændelser.
-- **SOC-NF-13-132:** Hændelsesrapport skal være tilgængelig senest 24 timer efter hændelsen.
+- **SOC-13-NF-087:** Incident response skal iværksættes inden for 5 minutter ved kritiske hændelser. (dækker: SOC-13-UC01)
+- **SOC-13-NF-088:** Hændelsesrapport skal være tilgængelig senest 24 timer efter hændelsen. (dækker: SOC-13-UC01)
 
 ---
 
 ### 🛡️ SOC – Rapportering (US-14)
 **Som SOC-ansvarlig vil jeg kunne udarbejde rapporter over sikkerhedshændelser, så organisationen kan evaluere og forbedre sikkerheden.**
 
-#### Use Case – Rapportering
-- **SOC-FK-14-133:** SOC
-- **SOC-FK-14-134:** Logs og hændelsesdata er gemt.
-- **SOC-FK-14-135:**
-  1. SOC genererer en rapport (fx ugentlig/månedlig).
-  2. Rapporten opsummerer alarmer, hændelser og respons.
-  3. Rapporten deles med Drift og Ledelse.
+#### Use Cases
+- **SOC-14-UC01 – Generere rapport**
+  - **Aktør:** SOC
+  - **Forudsætning:** Data om alarmer/incidents er gemt.
+  - **Trigger/Mål:** Give overblik til drift/ledelse.
+  - **Hovedforløb:** 1) Vælg periode. 2) Generer rapport (antal, typer, responstid). 3) Del rapporten.
+  - **Udvidelser/Fejl:** a) Mangel på data → rapport markerer usikkerhed.
 
 #### Funktionelle krav
-- **SOC-FK-14-136:** Systemet skal understøtte generering af rapporter baseret på logs og hændelser.
-- **SOC-FK-14-137:** Rapporten skal inkludere antal hændelser, kategorisering og respons.
+- **SOC-14-FK-089:** Systemet skal understøtte generering af rapporter baseret på logs og hændelser. (dækker: SOC-14-UC01)
+- **SOC-14-FK-090:** Rapporten skal inkludere antal hændelser, kategorisering og respons. (dækker: SOC-14-UC01)
 
 #### Ikke-funktionelle krav
-- **SOC-NF-14-138:** Rapporten skal kunne genereres automatisk.
-- **SOC-NF-14-139:** Rapporten skal udarbejdes mindst én gang pr. måned.
+- **SOC-14-NF-091:** Rapporten skal kunne genereres automatisk. (dækker: SOC-14-UC01)
+- **SOC-14-NF-092:** Rapporten skal udarbejdes mindst én gang pr. måned. (dækker: SOC-14-UC01)
 
 ### 💀 Hacker – SQL Injection (US-15)
 **Som Hacker vil jeg forsøge at manipulere med søgefunktionen via SQL injection, så jeg kan få adgang til data, jeg ikke burde se.**
 
-#### Use Case – SQL Injection
-- **HAK-FK-15-140:** Hacker
-- **HAK-FK-15-141:** Systemet har en søgefunktion.
-- **HAK-FK-15-142:**
-  1. Hacker indtaster ondsindet SQL-kode i søgefeltet.
-  2. Systemet sender input videre til databasen.
-  3. Hacker får adgang til data eller ændrer indhold.
+#### Use Cases
+- **HAK-15-UC01 – SQL Injection forsøg**
+  - **Aktør:** Hacker
+  - **Forudsætning:** Offentlig søgefunktion er tilgængelig.
+  - **Trigger/Mål:** Opnå uautoriseret adgang via SQLi.
+  - **Hovedforløb:** 1) Indsætter ondsindet input i søgefelt. 2) Forsøger at manipulere forespørgsel. 3) Observerer om systemet lækker data/fejl.
+  - **Udvidelser/Fejl:** a) Input filtreres og parameteriseres → ingen effekt.
 
 #### Funktionelle anti-krav
-- **HAK-FK-15-143:** Hacker skal ikke kunne ændre eller tilgå data via SQL injection.
+- **HAK-FK-15-158:** Alle databaseforespørgsler, herunder søgning, skal bruge parameteriserede queries eller ORM med bind-parametre. 
+- **HAK-FK-15-159:** Inputvalidering skal anvende whitelist-baserede regler for søgetermer (tegnsæt, længde, format). 
+- **HAK-FK-15-160:** Applikationsbruger i databasen skal have mindst mulige privilegier (ingen DROP/ALTER/CREATE), kun SELECT på relevante tabeller. 
+- **HAK-FK-15-161:** Fejlmeddelelser må ikke afsløre databaseinformation; tekniske detaljer logges sikkert. 
+- **HAK-FK-15-162:** WAF/LB skal blokere kendte SQLi-mønstre (fx UNION SELECT, comments, tautologier).
 
 #### Ikke-funktionelle anti-krav
-- **HAK-NF-15-144:** Alle database-forespørgsler skal parameteriseres og valideres.
-- **HAK-NF-15-145:** Fejlmeddelelser må ikke afsløre databaseinformation.
+- **HAK-NF-15-163:** Sikkerhedstests skal omfatte automatiske SQLi-scans uden kritiske fund før go-live. 
+- **HAK-NF-15-164:** Blokerede SQLi-forsøg skal fremgå i central log/SIEM inden for 1 minut. 
+- **HAK-NF-15-165:** Applikationens svar ved blokeret input skal være konsistente (ingen tidsbaserede læk). 
+- **HAK-NF-15-166:** DB-drivere og ORM skal patches løbende (ingen kendte CVE’er >30 dage).
 
----
 
 ### 💀 Hacker – XSS (Cross-Site Scripting) (US-16)
 **Som Hacker vil jeg forsøge at indsætte ondsindet JavaScript i indhold eller søgefelter, så det afvikles hos andre brugere.**
 
-#### Use Case – XSS
-- **HAK-FK-16-146:** Hacker
-- **HAK-FK-16-147:** Systemet viser brugerinput eller søgeresultater.
-- **HAK-FK-16-148:**
-  1. Hacker indtaster JavaScript i inputfelt.
-  2. Systemet viser input uden korrekt escaping.
-  3. Andre brugeres browser afvikler koden.
+#### Use Cases
+- **HAK-16-UC01 – XSS forsøg**
+  - **Aktør:** Hacker
+  - **Forudsætning:** Systemet viser brugerinput/søgetermer.
+  - **Trigger/Mål:** Afvikle script i andres browser.
+  - **Hovedforløb:** 1) Indsætter script i input. 2) Ser om script afvikles hos andre. 3) Forsøger at læse cookies/DOM.
+  - **Udvidelser/Fejl:** a) Output escapes → script kører ikke. b) CSP blokerer indlæsning.
 
 #### Funktionelle anti-krav
-- **HAK-FK-16-149:** Hacker skal ikke kunne afvikle scripts i andre brugeres browser via XSS.
+- **HAK-FK-16-167:** Alt input skal output-encodes korrekt pr. kontekst (HTML, attribute, URL, JS). 
+- **HAK-FK-16-168:** Content-Security-Policy (CSP) skal være aktiv med default-src 'self' og sikre script-regler (nonce/hash). 
+- **HAK-FK-16-169:** Sanitization skal anvendes på bruger-genereret indhold (whitelistede tags/attributter). 
+- **HAK-FK-16-170:** Applikationen må ikke reflektere rå forespørgselsparametre i DOM uden escaping. 
+- **HAK-FK-16-171:** Cookies med sessioner skal være HttpOnly, Secure og SameSite.
 
 #### Ikke-funktionelle anti-krav
-- **HAK-NF-16-150:** Alt brugerinput skal valideres og escapes korrekt.
-- **HAK-NF-16-151:** Systemet skal have en Content-Security-Policy (CSP), der forhindrer indlæsning af uautoriseret JavaScript.
-
----
+- **HAK-NF-16-172:** XSS-tests (reflected/stored/DOM) skal køre automatisk i pipeline; 0 kritiske fund før release. 
+- **HAK-NF-16-173:** Tredjeparts scripts skal kun tillades via CSP (nonce/hash) og efter review. 
+- **HAK-NF-16-174:** CSP-violations skal logges og rapporteres i SIEM inden for 1 minut. 
+- **HAK-NF-16-175:** Header-hardening skal være aktiv (X-Content-Type-Options, Referrer-Policy, Permissions-Policy).
 
 ### 💀 Hacker – DDoS (Distributed Denial of Service) (US-17)
 **Som Hacker vil jeg forsøge at overbelaste hjemmesiden med mange forespørgsler, så den ikke er tilgængelig for almindelige brugere.**
-
-#### Use Case – DDoS
-- **HAK-FK-17-152:** Hacker
-- **HAK-FK-17-153:** Systemet er offentligt tilgængeligt på internettet.
-- **HAK-FK-17-154:**
-  1. Hacker sender tusindvis af forespørgsler til systemet.
-  2. Systemets ressourcer bliver overbelastet.
-  3. Almindelige brugere oplever nedetid eller langsomme svartider.
+#### Use Cases
+- **HAK-17-UC01 – DDoS forsøg**
+  - **Aktør:** Hacker
+  - **Forudsætning:** Tjenesten er offentligt tilgængelig.
+  - **Trigger/Mål:** Forstyrre tilgængeligheden.
+  - **Hovedforløb:** 1) Sender stor mængde requests. 2) Forsøger at udnytte tunge endpoints. 3) Måler svartidsforringelse.
+  - **Udvidelser/Fejl:** a) Rate limiting aktiveres. b) WAF/LB mitigering reducerer effekt.
 
 #### Funktionelle anti-krav
-- **HAK-FK-17-155:** Hacker skal ikke kunne forhindre almindelige brugere i at tilgå hjemmesiden via DDoS.
+- **HAK-FK-17-176:** Systemet skal have rate-limiting pr. IP/klient og pr. endpoint. 
+- **HAK-FK-17-177:** WAF/LB skal have volumetriske regler (burst, connections/sec) samt geo/ASN-blokering.
+- **HAK-FK-17-178:** Maksimal request-størrelse og -varighed skal håndhæves (body limit + timeouts).
+- **HAK-FK-17-179:** Statisk indhold skal caches/CDN-distribueres.
+- **HAK-FK-17-180:** Systemet skal kunne gå i degraderet mode (fx simplere svar) for tunge endpoints.
+- **HAK-FK-17-181:** IP- eller token-baseret “quarantine” skal kunne aktiveres midlertidigt.
 
 #### Ikke-funktionelle anti-krav
-- **HAK-NF-17-156:** Systemet skal understøtte rate limiting og request filtering.
-- **HAK-NF-17-157:** Systemet skal være beskyttet bag en WAF eller loadbalancer, der kan mitigere simple DoS-forsøg.
+- **HAK-NF-17-182:** Ved overskredet rate-limit skal 429 returneres hurtigt, og legitime brugere skal stadig kunne tilgå forsiden. 
+- **HAK-NF-17-183:** Angrebsindikatorer (spikes i RPS, 429/403) skal alarmeres til drift/SOC inden for 30 sek. 
+- **HAK-NF-17-184:** Systemet skal kunne absorbere mindst 10× normal trafik uden total nedetid via WAF/LB/cache.
+- **HAK-NF-17-185:** Efter et angreb skal en post-incident rapport foreligge inden 24 timer.
