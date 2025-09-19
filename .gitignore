@@ -1,0 +1,18 @@
+# OS/Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Node/Frontend
+node_modules/
+
+# Dotnet
+bin/
+obj/
+
+# Docker/Postgres data
+container/db/data/
+.env
