@@ -1,11 +1,18 @@
+using cms.Data;
 using cms.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddAppHealth();
-
+var cs = builder.Configuration.GetConnectionString("DefaultConnection")
+         ?? throw new InvalidOperationException("Missing ConnectionStrings:DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(cs));
 // API controllers
 builder.Services.AddControllers();
+
+builder.AddAppHealth();
+
+
 
 var app = builder.Build();
 

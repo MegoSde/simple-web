@@ -5,6 +5,7 @@ Thumbs.db
 *.swo
 .vscode/
 .idea/
+src/cms/.idea
 
 # Node/Frontend
 node_modules/
@@ -12,6 +13,8 @@ node_modules/
 # Dotnet
 bin/
 obj/
+src/cms/bin
+src/cms/obj
 
 # Docker/Postgres data
 container/db/data/

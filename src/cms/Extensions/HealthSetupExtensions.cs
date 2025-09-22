@@ -1,5 +1,7 @@
-namespace cms.Extensions;
+using cms.Data;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+
+namespace cms.Extensions;
 
 public static class HealthSetupExtensions
 {
@@ -12,7 +14,12 @@ public static class HealthSetupExtensions
         // En simpel "self" check som altid er Healthy (til liveness)
         builder.Services
             .AddHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy());
+            .AddCheck("self", () => HealthCheckResult.Healthy())
+            .AddDbContextCheck<ApplicationDbContext>(
+                name: "postgres",
+                customTestQuery: (ctx, ct) => ctx.Database.CanConnectAsync(ct),
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready", "db" });
 
         return builder;
     }
