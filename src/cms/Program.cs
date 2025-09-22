@@ -11,12 +11,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(cs));
 builder.Services.AddControllers();
 
 builder.AddAppHealth();
-
+builder.Services.AddIdentityWithCookies();
 
 
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.UseHttpsRedirection();
 
+await app.ApplyMigrationsAndSeedAsync();
 app.Run();
