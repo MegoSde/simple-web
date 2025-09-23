@@ -1,0 +1,31 @@
+@{
+    var isAuth = Context.User?.Identity?.IsAuthenticated ?? false;
+    var name = isAuth ? Context.User.Identity!.Name : null;
+}
+<!doctype html>
+    <html lang="da">
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>@ViewData["Title"] - App</title>
+    <link rel="stylesheet" href="/public/cms.css" />
+    </head>
+    <body>
+    <header id="header">
+        <div id="title">Simple web <b>CMS</b></div>
+    <div id="user">
+               @if (isAuth)
+{
+    <form method="post" action="/logout" style="display:inline;">
+                                               @Html.AntiForgeryToken()
+                                               <span style="margin-right:0.5rem;">@name</span>
+        <button type="submit">Logout</button>
+        </form>
+}
+</div>
+    </header>
+    <main>
+                @RenderBody()
+    </main>
+    </body>
+    </html>

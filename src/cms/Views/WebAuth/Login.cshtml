@@ -1,0 +1,38 @@
+@model cms.Controllers.WebAuthController.LoginVm
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+<div class="center-page">
+    <div class="login">
+    <h1>Login</h1>
+    <form method="post" action="/login">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="ReturnUrl" value="@returnUrl"/>
+        <fieldset>
+            <label for="Username">Brugernavn</label><br/>
+            <input id="Username" name="Username" autocomplete="username" required/>
+        </fieldset>
+        <fieldset>
+            <label for="Password">Adgangskode</label><br/>
+            <input id="Password" type="password" name="Password" autocomplete="current-password" required/>
+        </fieldset>
+        <fieldset class="action">
+            <label><input type="checkbox" name="RememberMe"/> Husk mig</label>
+        </fieldset>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="error">
+                @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@e.ErrorMessage</div>
+                }
+            </div>
+        }
+        <div class="actions">
+            <button type="submit">Login</button>
+        </div>
+    </form>
+    </div>
+</div>

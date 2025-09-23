@@ -31,24 +31,41 @@ public static class IdentityCookieExtensions
             })
             .AddCookie(IdentityConstants.ApplicationScheme, o =>
             {
-                o.Cookie.Name = "app_auth";
+                o.LoginPath = "/login";
+                o.AccessDeniedPath = "/login";
+                o.Cookie.Name = "simple_web_cms_auth";
                 o.Cookie.HttpOnly = true;
                 o.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Prod: kræv HTTPS
                 o.Cookie.SameSite = SameSiteMode.Strict;
                 o.SlidingExpiration = true;
                 o.ExpireTimeSpan = TimeSpan.FromHours(8);
+                
+                static bool IsApi(HttpRequest r) =>
+                    r.Path.StartsWithSegments("/auth") ||
+                    r.Path.StartsWithSegments("/api")  ||
+                    (r.Headers.Accept.Any(a => a.Contains("application/json", StringComparison.OrdinalIgnoreCase)));
 
                 // API: returnér 401/403 i stedet for redirects
                 o.Events = new CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = ctx =>
                     {
-                        ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        if (IsApi(ctx.Request))
+                        {
+                            ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            return Task.CompletedTask;
+                        }
+                        ctx.Response.Redirect(ctx.RedirectUri);
                         return Task.CompletedTask;
                     },
                     OnRedirectToAccessDenied = ctx =>
                     {
-                        ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        if (IsApi(ctx.Request))
+                        {
+                            ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            return Task.CompletedTask;
+                        }
+                        ctx.Response.Redirect(ctx.RedirectUri);
                         return Task.CompletedTask;
                     }
                 };
