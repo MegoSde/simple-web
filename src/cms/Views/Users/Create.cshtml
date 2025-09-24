@@ -1,0 +1,55 @@
+@model cms.Controllers.UsersController.UserCreateVm
+@{
+    ViewData["Title"] = "Create user";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section id="user-create">
+    <h1>Create user</h1>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="error">
+            @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            { <div>@e.ErrorMessage</div> }
+        </div>
+    }
+
+    <form method="post" action="/users/create">
+        @Html.AntiForgeryToken()
+        <fieldset>
+            <label for="UserName">Username</label>
+            <input id="UserName" name="UserName" value="@Model.UserName" required />
+        </fieldset>
+
+        <fieldset>
+            <label for="Email">Email</label>
+            <input id="Email" type="email" name="Email" value="@Model.Email" required />
+        </fieldset>
+
+        <fieldset>
+            <label for="Password">Password</label>
+            <input id="Password" type="password" name="Password" required />
+        </fieldset>
+
+        <fieldset>
+            <label for="ConfirmPassword">Confirm password</label>
+            <input id="ConfirmPassword" type="password" name="ConfirmPassword" required />
+        </fieldset>
+
+        <fieldset>
+            <legend>Roles</legend>
+            @foreach (var r in Model.AllRoles)
+            {
+                <label style="display:inline-flex;gap:.5rem;align-items:center;margin-right:1rem;">
+                    <input type="checkbox" name="SelectedRoles" value="@r" />
+                    <span>@r</span>
+                </label>
+            }
+        </fieldset>
+
+        <div class="actions">
+            <a class="btn" href="/users">Cancel</a>
+            <button type="submit" class="btn">Create</button>
+        </div>
+    </form>
+</section>

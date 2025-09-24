@@ -1,6 +1,7 @@
 @{
     var isAuth = Context.User?.Identity?.IsAuthenticated ?? false;
     var name = isAuth ? Context.User.Identity!.Name : null;
+    var isLogin = Context.Request.Path.StartsWithSegments("/login", StringComparison.OrdinalIgnoreCase);
 }
 <!doctype html>
     <html lang="da">
@@ -13,17 +14,21 @@
     <body>
     <header id="header">
         <div id="title">Simple web <b>CMS</b></div>
-    <div id="user">
-               @if (isAuth)
-{
-    <form method="post" action="/logout" style="display:inline;">
-                                               @Html.AntiForgeryToken()
-                                               <span style="margin-right:0.5rem;">@name</span>
-        <button type="submit">Logout</button>
-        </form>
-}
-</div>
+        <div id="user">
+            @if (isAuth)
+            {
+                <form method="post" action="/logout" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <span style="margin-right:0.5rem;">@name</span>
+                    <button type="submit">Logout</button>
+                </form>
+            }
+        </div>
     </header>
+    @if (isAuth && !isLogin)
+    {
+        @await Html.PartialAsync("_Nav")
+    }
     <main>
                 @RenderBody()
     </main>

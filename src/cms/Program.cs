@@ -27,6 +27,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseStatusCodePagesWithReExecute("/error/{0}");
 // MVC routes (conventional)
 app.MapControllerRoute(
     name: "default",

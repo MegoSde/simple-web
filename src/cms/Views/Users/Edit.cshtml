@@ -1,0 +1,56 @@
+@model cms.Controllers.UsersController.UserEditVm
+@{
+    ViewData["Title"] = "Edit user";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section id="user-edit">
+    <h1>Edit user</h1>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="error" style="margin:.5rem 0;">
+            @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            { <div>@e.ErrorMessage</div> }
+        </div>
+    }
+
+    <form method="post" action="/users/@Model.Id">
+        @Html.AntiForgeryToken()
+
+        <fieldset>
+            <label for="UserName">Username</label>
+            <input id="UserName" name="UserName" value="@Model.UserName" required />
+        </fieldset>
+
+        <fieldset>
+            <label for="Email">Email</label>
+            <input id="Email" type="email" name="Email" value="@Model.Email" required />
+        </fieldset>
+
+        <fieldset>
+            <legend>Roles</legend>
+            @foreach (var r in Model.AllRoles)
+            {
+                var checkedAttr = (Model.SelectedRoles?.Contains(r) ?? false) ? "checked" : "";
+                <label style="display:inline-flex;gap:.5rem;align-items:center;margin-right:1rem;">
+                    <input type="checkbox" name="SelectedRoles" value="@r" @Html.Raw(checkedAttr) />
+                    <span>@r</span>
+                </label>
+            }
+        </fieldset>
+
+        <fieldset>
+            <legend>Change password (optional)</legend>
+            <label for="NewPassword">New password</label>
+            <input id="NewPassword" type="password" name="NewPassword" />
+
+            <label for="ConfirmPassword">Confirm password</label>
+            <input id="ConfirmPassword" type="password" name="ConfirmPassword" />
+        </fieldset>
+
+        <div class="actions">
+            <a class="btn" href="/users">Cancel</a>
+            <button type="submit" class="btn">Save</button>
+        </div>
+    </form>
+</section>
