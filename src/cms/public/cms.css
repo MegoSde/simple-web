@@ -68,6 +68,7 @@ body {
 .container { max-width: 960px; margin-inline: auto; padding: 1rem; }
 button, .btn {
     display: inline-flex; align-items: center; gap: .4rem;
+    text-decoration: none;
     padding: .5rem .8rem; border-radius: .5rem; border: 1px solid color-mix(in oklab, CanvasText 20%, transparent);
     background: color-mix(in oklab, Canvas 90%, CanvasText 10%);
     cursor: pointer;
@@ -200,14 +201,19 @@ fieldset.action { margin-top: 1rem; display: flex; justify-content: flex-end; ga
     margin-top: .5rem; padding: .5rem; border-radius: .5rem;
 }
 
-.login .actions { margin-top: 1rem; display: flex; justify-content: flex-end; gap: .5rem; }
+.actions { margin-top: 1rem; display: flex; justify-content: flex-end; gap: .5rem; }
 
-.login .actions button[type="submit"] {
+.actions button[type="submit"], .actions .btn {
     background: var(--accent);
     color: var(--accent-contrast);
     border: 1px solid color-mix(in oklab, var(--accent) 55%, transparent);
     border-radius: .5rem;
 }
-.login .actions button[type="submit"]:hover {
+.actions button[type="submit"]:hover, .actions .btn:hover {
     background: var(--accent-hover);
+}
+
+td, th {
+    padding-right: 0.5rem;
+    text-align: left;
 }
