@@ -18,4 +18,5 @@ src/cms/obj
 
 # Docker/Postgres data
 container/db/data/
+data/
 .env
