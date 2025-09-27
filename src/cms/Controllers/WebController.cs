@@ -19,10 +19,4 @@ public class WebController : Controller
 
         return View();
     }
-
-    [HttpGet("/Media")]
-    public IActionResult Media()
-    {
-        return View();
-    }
 }

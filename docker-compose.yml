@@ -50,11 +50,12 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_ENDPOINT: ${MINIO_ENDPOINT-http://minio:9000}
-      MINIO_BUCKETS: ${MINIO_BUCKETS-originals,derived}
+      MINIO_BUCKETS: ${MINIO_BUCKETS-originals,work,thumbnail}
+      MINIO_ANON_READ_BUCKETS: ${MINIO_ANON_READ_BUCKETS-work,thumbnail}
       APP_MEDIA_ACCESS_KEY: ${APP_MEDIA_ACCESS_KEY-}
       APP_MEDIA_SECRET_KEY: ${APP_MEDIA_SECRET_KEY-}
       APP_MEDIA_POLICY: ${APP_MEDIA_POLICY-app-media-policy}
     volumes:
-      - ./container/minio/init/minio-init.sh:/init/minio-init.sh:ro
+      - ./container/minio/init/minio-init-and-test.sh:/init/minio-init-and-test.sh:ro
       - ./container/minio/data/minio-init-logs:/logs
-    entrypoint: [ "/bin/sh","-lc","/init/minio-init.sh" ]
+    entrypoint: [ "/bin/sh","-lc","/init/minio-init-and-test.sh" ]

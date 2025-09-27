@@ -1,0 +1,64 @@
+@model PagedMediaResponse
+@{
+    ViewData["Title"] = "Media";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var totalPages = (int)Math.Ceiling((double)Model.total / Model.pageSize);
+}
+
+    <h1>Media</h1>
+    <a href="/media/new">➕ Upload nyt</a>
+
+  @if (TempData["ok"] is string ok)
+  {
+    <div class="flash ok">@ok</div>
+  }
+  @if (TempData["error"] is string error)
+  {
+    <div class="flash err">@error</div>
+  }
+
+  <div class="grid">
+    @foreach (var item in Model.items)
+    {
+      var h = item.hash;
+      var a = h.Substring(0, 2);
+      var b = h.Substring(2, 2);
+      var thumbUrl = $"/cmsimg/thumbnail/{a}/{b}/{h}.webp";
+
+      <div class="card">
+        <img src="@thumbUrl"
+             alt="@(!string.IsNullOrWhiteSpace(item.alt_text) ? item.alt_text : "Image")"
+             loading="lazy" />
+        <div class="meta">
+          <div><strong>@item.width</strong>x<strong>@item.height</strong> • @(Math.Round(item.bytes / 1024.0)) KB</div>
+          <div>@item.created_at.ToLocalTime()</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <nav class="pager">
+    @if (Model.page > 1)
+    {
+      <a class="btn" href="/media?page=@(Model.page-1)&pageSize=@Model.pageSize">« Forrige</a>
+    }
+    else { <span class="btn">« Forrige</span> }
+
+    @for (int p = 1; p <= totalPages; p++)
+    {
+      if (p == Model.page)
+      {
+        <span class="active">@p</span>
+      }
+      else
+      {
+        <a href="/media?page=@p&pageSize=@Model.pageSize">@p</a>
+      }
+    }
+
+    @if (Model.page < totalPages)
+    {
+      <a class="btn" href="/media?page=@(Model.page+1)&pageSize=@Model.pageSize">Næste »</a>
+    }
+    else { <span class="btn">Næste »</span> }
+  </nav>
