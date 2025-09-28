@@ -1,0 +1,25 @@
+@model List<cms.Models.MediaPreset>
+@{
+    ViewData["Title"] = "Image presets";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Image presets</h1>
+
+<p><a class="btn btn-primary" href="/media/preset/new">+ Ny preset</a></p>
+
+<table class="table table-striped">
+    <thead>
+    <tr><th>Navn</th><th>Størrelse</th><th>Typer</th><th></th></tr>
+    </thead>
+    <tbody>
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td><a href="/media/preset/@p.Name">@p.Name</a></td>
+            <td>@p.Width x @p.Height</td>
+            <td>@p.Types</td>
+            <td><a class="btn btn-sm btn-secondary" href="/media/preset/@p.Name">Rediger</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

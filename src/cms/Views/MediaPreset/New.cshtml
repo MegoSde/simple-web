@@ -1,0 +1,41 @@
+@model cms.Controllers.MediaPresetController.PresetFormVm
+@{
+    ViewData["Title"] = "Ny preset";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Ny preset</h1>
+
+<form method="post" action="/media/preset/new">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label class="form-label">Navn (slug)</label>
+        <input name="Name" class="form-control" value="@Model.Name" />
+        @Html.ValidationMessage("Name", new { @class="text-danger" })
+    </div>
+
+    <div class="row">
+        <div class="col mb-3">
+            <label class="form-label">Width</label>
+            <input type="number" name="Width" class="form-control" value="@Model.Width" min="0" />
+        </div>
+        <div class="col mb-3">
+            <label class="form-label">Height</label>
+            <input type="number" name="Height" class="form-control" value="@Model.Height" min="0" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label d-block">Typer</label>
+        @foreach (var t in Model.AllowedTypesUniverse)
+        {
+            var isChecked = Model.Types?.Contains(t, StringComparer.OrdinalIgnoreCase) ?? false;
+            <label class="me-3">
+                <input type="checkbox" name="Types" value="@t" @(isChecked ? "checked" : null) /> @t
+            </label>
+        }
+        @Html.ValidationMessage("Types", new { @class="text-danger d-block" })
+    </div>
+
+    <button class="btn btn-primary" type="submit">Opret</button>
+    <a class="btn btn-link" href="/imgpreset">Tilbage</a>
+</form>

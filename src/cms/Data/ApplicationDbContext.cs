@@ -8,6 +8,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     : IdentityDbContext<ApplicationUser, ApplicationRole, string>(options)
 {
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
+    public DbSet<MediaPreset> MediaPresets => Set<MediaPreset>();
     
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -39,6 +40,19 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             e.Property(p => p.Meta)
                 .HasColumnName("meta")
                 .HasColumnType("jsonb");
+        });
+        
+        b.Entity<MediaPreset>(e =>
+        {
+            e.ToTable("media_presets");
+            e.HasIndex(x => x.Name).IsUnique();
+            e.Property(x => x.Id).HasColumnName("id");
+            e.Property(x => x.Name).HasColumnName("name");
+            e.Property(x => x.Width).HasColumnName("width");
+            e.Property(x => x.Height).HasColumnName("height");
+            e.Property(x => x.Types).HasColumnName("types");
+            e.Property(x => x.CreatedAt).HasColumnName("created_at");
+            e.Property(x => x.UpdatedAt).HasColumnName("updated_at");
         });
     }
 }

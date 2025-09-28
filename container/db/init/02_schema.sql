@@ -1,6 +1,5 @@
 -- 02_schema.sql
 -- Create an application schema and roles defaults.
--- NOTE: Tables are created by EF Core migrations in later sprints.
 BEGIN;
 
 -- Ensure cmd schema exists; in init phase, CURRENT_USER is the bootstrap user.
