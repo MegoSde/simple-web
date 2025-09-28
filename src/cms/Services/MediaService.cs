@@ -8,6 +8,8 @@ using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
 using cms.Data;
+using cms.Models;
+using cms.Common.Errors;
 
 namespace cms.Services;
 
@@ -182,14 +184,4 @@ public class MediaService
             WebpFormat => new WebpEncoder(),
             _ => throw new ApiError(415, "unsupported_mime", "Kun JPEG/PNG/WebP understøttes.")
         };
-}
-
-public class ApiError : Exception
-{
-    public int StatusCode { get; }
-    public string Code { get; }
-    public ApiError(int status, string code, string message) : base(message)
-    {
-        StatusCode = status; Code = code;
-    }
 }

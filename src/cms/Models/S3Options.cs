@@ -1,3 +1,5 @@
+namespace cms.Models;
+
 public sealed class S3Options
 {
     public string Endpoint { get; set; } = "";

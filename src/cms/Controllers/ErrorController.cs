@@ -10,10 +10,17 @@ public class ErrorController : Controller
     [HttpGet("{code:int}")]
     public IActionResult Status(int code)
     {
-        Response.StatusCode = code; // behold 404/403/… som status
+        Response.StatusCode = code; // behold 404/403/… som status'
+        
+        var wantsJson =
+            Request.GetTypedHeaders().Accept.Any(mt =>
+                // mt.MediaType er en StringSegment
+                mt.MediaType.Equals("application/json", StringComparison.OrdinalIgnoreCase)
+                || (mt.Suffix.HasValue && mt.Suffix.Value.Equals("json", StringComparison.OrdinalIgnoreCase)) // application/*+json
+                || mt.MediaType.ToString().EndsWith("+json", StringComparison.OrdinalIgnoreCase)
+            );
 
-        // Hvis API (Accept: application/json), så giv ProblemDetails
-        if (Request.Headers.Accept.Any(a => a.Contains("application/json", StringComparison.OrdinalIgnoreCase)))
+        if (wantsJson)
         {
             return new ObjectResult(new ProblemDetails {
                 Title = code == 404 ? "Not Found" : "Error",

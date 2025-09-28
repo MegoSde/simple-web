@@ -23,12 +23,7 @@ builder.Services.AddIdentityWithCookies();
 
 var app = builder.Build();
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(app.Environment.ContentRootPath, "public")),
-    RequestPath = "/public"
-});
+app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication();
@@ -39,7 +34,7 @@ app.UseStatusCodePagesWithReExecute("/error/{0}");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Web}/{action=Index}/{id?}");
-app.MapCmsImageProxyEndpoints();
+//app.MapCmsImageProxyEndpoints();
 
 app.UseHttpsRedirection();
 

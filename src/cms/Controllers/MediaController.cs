@@ -3,8 +3,11 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using cms.Data;
+using cms.Models;
 using cms.Services;
+using cms.Common.Errors;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
@@ -13,6 +16,7 @@ using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
 
 [ApiController]
+[Authorize]
 public class MediaController : Controller {
   private readonly MediaService _svc;
   private readonly ApplicationDbContext _db;

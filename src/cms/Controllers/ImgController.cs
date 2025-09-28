@@ -1,9 +1,7 @@
-using System.Globalization;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Net.Http.Headers;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
@@ -53,7 +51,7 @@ public class ImgController : ControllerBase
         var t = NormalizeType(type); // "jpeg" -> "jpg"
         if (!KnownTypes.Contains(t)) return StatusCode(415, "unsupported_type");
 
-        var allowed = (p.Types ?? "webp")
+        var allowed = p.Types 
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Select(s => NormalizeType(s))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);

@@ -1,3 +1,5 @@
+namespace cms.Models;
+
 public record MediaCreateResponse(
     Guid id, string hash, string original_url, int width, int height, string mime
 );

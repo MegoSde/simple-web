@@ -1,3 +1,5 @@
+namespace cms.Models;
+
 public sealed class HealthOptions
 {
     public MinioHealthOptions Minio { get; set; } = new();

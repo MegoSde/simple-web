@@ -50,23 +50,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             e.Property(x => x.Name).HasColumnName("name");
             e.Property(x => x.Width).HasColumnName("width");
             e.Property(x => x.Height).HasColumnName("height");
-            e.Property(x => x.Types).HasColumnName("types");
+            e.Property(x => x.Types).HasColumnName("types").IsRequired();
             e.Property(x => x.CreatedAt).HasColumnName("created_at");
             e.Property(x => x.UpdatedAt).HasColumnName("updated_at");
         });
     }
-}
-public class MediaAsset {
-    public Guid Id { get; set; }
-    public string Hash { get; set; } = default!;
-    public string OriginalUrl { get; set; } = default!;
-    public string Mime { get; set; } = default!;
-    public int Width { get; set; }
-    public int Height { get; set; }
-    public long Bytes { get; set; }
-    public string? AltText { get; set; }
-    public string UploadedBy { get; set; } = default!;
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
-    public string Meta { get; set; } = "{}"; // map til jsonb via EF: string <-> jsonb
-    // Alternativt: brug JsonDocument / Dictionary<string,object> + EF converter
 }
