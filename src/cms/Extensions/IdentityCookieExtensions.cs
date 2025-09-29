@@ -43,7 +43,7 @@ public static class IdentityCookieExtensions
                 static bool IsApi(HttpRequest r) =>
                     r.Path.StartsWithSegments("/auth") ||
                     r.Path.StartsWithSegments("/api")  ||
-                    (r.Headers.Accept.Any(a => a.Contains("application/json", StringComparison.OrdinalIgnoreCase)));
+                    (r.Headers.Accept.Any(a => (a ?? "").Contains("application/json", StringComparison.OrdinalIgnoreCase)));
 
                 // API: returnér 401/403 i stedet for redirects
                 o.Events = new CookieAuthenticationEvents

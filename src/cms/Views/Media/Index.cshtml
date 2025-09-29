@@ -2,12 +2,26 @@
 @{
     ViewData["Title"] = "Media";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var totalPages = (int)Math.Ceiling((double)Model.total / Model.pageSize);
+    var totalPages = (int)Math.Ceiling((double)Model.Total / Model.PageSize);
 }
 
-    <h1>Media</h1>
-<a href="/media/new">➕ Upload nyt</a>
-<a href="/media/preset">Presets [_]</a>
+<div class="page-titlebar">
+  <h1>Media</h1>
+
+  <div class="actionbar">
+    <a href="@Url.Action("New","Media")" class="btn">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="/icons.v1.svg#i-add"></use></svg>
+      Upload nyt
+    </a>
+    <a href="@Url.Action("Index","MediaPreset")" class="btn">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="/icons.v1.svg#i-format"></use></svg>
+      Presets
+    </a>
+
+
+  </div>
+</div>
+ 
 
   @if (TempData["ok"] is string ok)
   {
@@ -19,47 +33,47 @@
   }
 
   <div class="grid">
-    @foreach (var item in Model.items)
+    @foreach (var item in Model.Items)
     {
-      var h = item.hash;
+      var h = item.Hash;
       var a = h.Substring(0, 2);
       var b = h.Substring(2, 2);
       var thumbUrl = $"/cmsimg/thumbnail/{a}/{b}/{h}.webp";
 
       <a class="card" href="/media/@a/@b/@h">
         <img src="@thumbUrl"
-             alt="@(!string.IsNullOrWhiteSpace(item.alt_text) ? item.alt_text : "Image")"
+             alt="@(!string.IsNullOrWhiteSpace(item.AltText) ? item.AltText : "Image")"
              loading="lazy" />
         <div class="meta">
-          <div><strong>@item.width</strong>x<strong>@item.height</strong> • @(Math.Round(item.bytes / 1024.0)) KB</div>
-          <div>@item.created_at.ToLocalTime()</div>
+          <div><strong>@item.Width</strong>x<strong>@item.Height</strong> • @(Math.Round(item.Bytes / 1024.0)) KB</div>
+          <div>@item.CreatedAt.ToLocalTime()</div>
         </div>
       </a>
     }
   </div>
 
   <nav class="pager">
-    @if (Model.page > 1)
+    @if (Model.Page > 1)
     {
-      <a class="btn" href="/media?page=@(Model.page-1)&pageSize=@Model.pageSize">« Forrige</a>
+      <a class="btn" href="/media?page=@(Model.Page-1)&pageSize=@Model.PageSize">« Forrige</a>
     }
     else { <span class="btn">« Forrige</span> }
 
     @for (int p = 1; p <= totalPages; p++)
     {
-      if (p == Model.page)
+      if (p == Model.Page)
       {
         <span class="active">@p</span>
       }
       else
       {
-        <a href="/media?page=@p&pageSize=@Model.pageSize">@p</a>
+        <a href="/media?page=@p&pageSize=@Model.PageSize">@p</a>
       }
     }
 
-    @if (Model.page < totalPages)
+    @if (Model.Page < totalPages)
     {
-      <a class="btn" href="/media?page=@(Model.page+1)&pageSize=@Model.pageSize">Næste »</a>
+      <a class="btn" href="/media?page=@(Model.Page+1)&pageSize=@Model.PageSize">Næste »</a>
     }
     else { <span class="btn">Næste »</span> }
   </nav>

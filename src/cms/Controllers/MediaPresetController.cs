@@ -35,7 +35,7 @@ public class MediaPresetController : Controller
             Width = 0,
             Height = 0,
             Types = new[] { "webp" },
-            AllowedTypesUniverse = AllowedTypesUniverse
+            AllowedTypes = AllowedTypesUniverse
         });
     }
 
@@ -56,7 +56,7 @@ public class MediaPresetController : Controller
 
         if (!ModelState.IsValid)
         {
-            vm.AllowedTypesUniverse = AllowedTypesUniverse;
+            vm.AllowedTypes = AllowedTypesUniverse;
             return View("New", vm);
         }
 
@@ -64,7 +64,7 @@ public class MediaPresetController : Controller
         if (exists)
         {
             ModelState.AddModelError(nameof(vm.Name), "Et preset med dette navn findes allerede.");
-            vm.AllowedTypesUniverse = AllowedTypesUniverse;
+            vm.AllowedTypes = AllowedTypesUniverse;
             return View("New", vm);
         }
 
@@ -98,7 +98,7 @@ public class MediaPresetController : Controller
             Width = entity.Width,
             Height = entity.Height,
             Types = entity.Types.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
-            AllowedTypesUniverse = AllowedTypesUniverse
+            AllowedTypes = AllowedTypesUniverse
         });
     }
 
@@ -128,7 +128,7 @@ public class MediaPresetController : Controller
 
         if (!ModelState.IsValid)
         {
-            vm.AllowedTypesUniverse = AllowedTypesUniverse;
+            vm.AllowedTypes = AllowedTypesUniverse;
             vm.OriginalName = entity.Name;
             return View("Edit", vm);
         }
@@ -162,22 +162,11 @@ public class MediaPresetController : Controller
 
     private static void NormalizeVm(PresetFormVm vm)
     {
-        vm.Name = (vm.Name ?? "").Trim().ToLowerInvariant();
+        vm.Name = vm.Name.Trim().ToLowerInvariant();
         vm.Types = (vm.Types ?? Array.Empty<string>())
-            .Select(t => (t ?? "").Trim().ToLowerInvariant())
+            .Select(t => t.Trim().ToLowerInvariant())
             .Where(t => !string.IsNullOrWhiteSpace(t))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
-    }
-
-    // ViewModel
-    public class PresetFormVm
-    {
-        public string? OriginalName { get; set; } // til redirect ved rename
-        public string Name { get; set; } = "";
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public string[]? Types { get; set; }
-        public string[] AllowedTypesUniverse { get; set; } = Array.Empty<string>();
     }
 }

@@ -1,4 +1,3 @@
-using Amazon;
 using Amazon.S3;
 
 namespace cms.Services;

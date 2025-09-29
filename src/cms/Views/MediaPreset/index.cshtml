@@ -3,9 +3,26 @@
     ViewData["Title"] = "Image presets";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<a class="backlink" href="@Url.Action("List","Media")">
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/icons.v1.svg#i-back"></use>
+    </svg>
+    Tilbage
+</a>
+
+<div class="page-titlebar">
 <h1>Image presets</h1>
 
-<p><a class="btn btn-primary" href="/media/preset/new">+ Ny preset</a></p>
+<div class="actionbar">
+    <a href="@Url.Action("New","MediaPreset")" class="btn">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Ny preset
+    </a>
+</div>
+</div>
 
 <table class="table table-striped">
     <thead>
@@ -15,10 +32,10 @@
     @foreach (var p in Model)
     {
         <tr>
-            <td><a href="/media/preset/@p.Name">@p.Name</a></td>
+            <td>@p.Name</td>
             <td>@p.Width x @p.Height</td>
             <td>@p.Types</td>
-            <td><a class="btn btn-sm btn-secondary" href="/media/preset/@p.Name">Rediger</a></td>
+            <td><a href="/media/preset/@p.Name">Rediger</a></td>
         </tr>
     }
     </tbody>

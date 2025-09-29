@@ -73,6 +73,7 @@ button, .btn {
     background: color-mix(in oklab, Canvas 90%, CanvasText 10%);
     cursor: pointer;
 }
+.btn.btn-sm { padding: .1rem .4rem; }
 button:hover, .btn:hover { background: color-mix(in oklab, Canvas 85%, CanvasText 15%); }
 :focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
 
@@ -217,3 +218,45 @@ td, th {
     padding-right: 0.5rem;
     text-align: left;
 }
+
+.page-titlebar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; flex-wrap:wrap; margin-block:.5rem 1rem;
+}
+.page-titlebar .actionbar{ display:inline-flex; align-items:center; gap:.5rem; }
+
+.icon{
+    width:1em; height:1em;
+    stroke:currentColor; fill:none; stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round;
+    vertical-align:-0.125em;
+}
+
+a.card { text-decoration: none; }
+nav.pager { display: flex; justify-content: center; align-items: center; gap: 1rem; }
+span.btn { color: darkgray; cursor: default; }
+
+.backlink{
+    display:inline-flex; align-items:center; gap:.4rem;
+    font-size:.9rem; font-weight:500;
+    color:#666; text-decoration:none;
+    margin-block:.25rem .25rem;  /* lidt luft over/under */
+}
+.backlink:hover{ color: var(--accent-hover);; text-decoration:underline; }
+.backlink:focus{ outline:2px solid #000; outline-offset:2px; border-radius:.25rem; }
+
+.backlink .icon{
+    width:1em; height:1em;
+    stroke:currentColor; fill:none; stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round;
+    vertical-align:-0.1em;
+}
+.crop-wrap { position: relative; display: inline-block; max-width: 100%; }
+.crop-img { max-width: 100%; display: block; }
+.crop-rect { position:absolute; border:2px solid #00d; background: rgba(0,128,255,.15); cursor: move; }
+.handle { position:absolute; width:12px; height:12px; background:#00d; right:-6px; bottom:-6px; cursor: nwse-resize; }
+.preset-pill { margin: 0 .5rem .5rem 0; display:inline-block; }
+.preset-pill.selected { background:#0d6efd; color:#fff; border-color:#0d6efd; }
+.ratio-pill { margin: 0 .5rem .5rem 0; }
+.ratio-pill.active { background:#6c757d; color:#fff; }
+.table-action { display:inline-flex; align-items:center; gap:.4rem; }

@@ -1,6 +1,6 @@
 @{
-    var isAuth = Context.User?.Identity?.IsAuthenticated ?? false;
-    var name = isAuth ? Context.User?.Identity!.Name : null;
+    var isAuth = Context.User.Identity?.IsAuthenticated ?? false;
+    var name = isAuth ? Context.User.Identity!.Name : null;
     var isLogin = Context.Request.Path.StartsWithSegments("/login", StringComparison.OrdinalIgnoreCase);
 }
 <!doctype html>
@@ -11,6 +11,7 @@
     <title>@ViewData["Title"] - Simple web CMS</title>
     <link rel="stylesheet" href="/cms.css" />
     @RenderSection("Scripts", required: false)
+    <link rel="preload" href="/icons.v1.svg" as="image" type="image/svg+xml" crossorigin>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -22,7 +23,7 @@
         <div id="user">
             @if (isAuth)
             {
-                <form method="post" action="/logout" style="display:inline;">
+                <form method="post" action="@Url.Action("Logout","Auth")" style="display:inline;">
                     @Html.AntiForgeryToken()
                     <span style="margin-right:0.5rem;">@name</span>
                     <button type="submit">Logout</button>

@@ -7,13 +7,13 @@
     <div>
         <ul>
             <li>
-                <a class="@(Active("/pages"))" href="/pages" title="Pages">
+                <a class="@(Active("/pages"))" href="@Url.Action("Pages","Web")" title="Pages">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5z"/></svg>
                     <span>Pages</span>
                 </a>
             </li>
             <li>
-                <a class="@(Active("/media"))" href="/media" title="Images">
+                <a class="@(Active("/media"))" href="@Url.Action("List","Media")" title="Images">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 19V5a2 2 0 0 0-2-2H5C3.9 3 3 3.9 3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11A2.5 2.5 0 1 1 11 8.5 2.5 2.5 0 0 1 8.5 11zm10 6H5l4-5 3 4 2-3 4.5 6z"/></svg>
                     <span>Images</span>
                 </a>
@@ -21,7 +21,7 @@
             @if (isAdmin)
             {
                 <li>
-                    <a class="@(Active("/users"))" href="/users" title="Users">
+                    <a class="@(Active("/users"))" href="@Url.Action("Index","Users")" title="Users">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.33 0-8 2.17-8 5v1h16v-1c0-2.83-3.67-5-8-5z"/></svg>
                         <span>Users</span>
                     </a>

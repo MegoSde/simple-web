@@ -25,5 +25,6 @@ public class MediaPreset
     // Normaliseret ratio (DB-beregnet)
     public int RatioW { get; set; }   // 0 ved 'free'
     public int RatioH { get; set; }   // 0 ved 'free'
+    [MaxLength(32)]
     public string RatioKey { get; set; } = "free"; // fx "256:75"
 }

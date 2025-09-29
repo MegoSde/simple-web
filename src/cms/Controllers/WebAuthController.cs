@@ -8,19 +8,17 @@ namespace cms.Controllers;
 public class WebAuthController : Controller
 {
     private readonly SignInManager<ApplicationUser> _signIn;
-    private readonly UserManager<ApplicationUser> _users;
 
-    public WebAuthController(SignInManager<ApplicationUser> signIn, UserManager<ApplicationUser> users)
+    public WebAuthController(SignInManager<ApplicationUser> signIn)
     {
         _signIn = signIn;
-        _users = users;
     }
 
     [HttpGet("/login")]
     [AllowAnonymous]
     public IActionResult Login(string? returnUrl = null)
     {
-        if (User?.Identity?.IsAuthenticated == true)
+        if (User.Identity?.IsAuthenticated == true)
             return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl);
 
         ViewData["ReturnUrl"] = returnUrl;

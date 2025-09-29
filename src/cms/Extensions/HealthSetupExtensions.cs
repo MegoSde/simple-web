@@ -58,7 +58,7 @@ public static class HealthSetupExtensions
             });
 
             // Tilføj MinIO health check (bucketnavn læses inde i selve checket)
-            hc.AddCheck<cms.Extensions.MinioHealthCheck>(
+            hc.AddCheck<MinioHealthCheck>(
                 "minio",
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { "ready", "s3" });

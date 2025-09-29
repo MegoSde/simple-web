@@ -1,34 +1,38 @@
-@model cms.Controllers.MediaPresetController.PresetFormVm
+@model cms.Models.PresetFormVm
 @{
     ViewData["Title"] = "Rediger preset";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<a class="backlink" href="@Url.Action("Index","MediaPreset")">
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/icons.v1.svg#i-back"></use>
+    </svg>
+    Tilbage
+</a>
 <h1>Rediger preset</h1>
 
 <form method="post" action="/media/preset/@Model.OriginalName">
     @Html.AntiForgeryToken()
     <input type="hidden" name="OriginalName" value="@Model.OriginalName" />
 
-    <div class="mb-3">
+    <fieldset>
         <label class="form-label">Navn (slug)</label>
         <input name="Name" class="form-control" value="@Model.Name" />
         @Html.ValidationMessage("Name", new { @class="text-danger" })
-    </div>
-
-    <div class="row">
-        <div class="col mb-3">
+    </fieldset>
+    
+        <fieldset>
             <label class="form-label">Width</label>
             <input type="number" name="Width" class="form-control" value="@Model.Width" min="0" />
-        </div>
-        <div class="col mb-3">
+        </fieldset>
+        <fieldset>
             <label class="form-label">Height</label>
             <input type="number" name="Height" class="form-control" value="@Model.Height" min="0" />
-        </div>
-    </div>
+        </fieldset>
 
-    <div class="mb-3">
+    <fieldset>
         <label class="form-label d-block">Typer</label>
-        @foreach (var t in Model.AllowedTypesUniverse)
+        @foreach (var t in Model.AllowedTypes)
         {
             var isChecked = Model.Types?.Contains(t, StringComparer.OrdinalIgnoreCase) ?? false;
             <label class="me-3">
@@ -36,8 +40,7 @@
             </label>
         }
         @Html.ValidationMessage("Types", new { @class="text-danger d-block" })
-    </div>
+    </fieldset>
 
     <button class="btn btn-primary" type="submit">Gem</button>
-    <a class="btn btn-link" href="/imgpreset">Tilbage</a>
 </form>

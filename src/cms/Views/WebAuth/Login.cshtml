@@ -7,7 +7,7 @@
 <div class="center-page">
     <div class="login">
     <h1>Login</h1>
-    <form method="post" action="/login">
+    <form method="post" action=""@Url.Action("Login","Auth")>
         @Html.AntiForgeryToken()
         <input type="hidden" name="ReturnUrl" value="@returnUrl"/>
         <fieldset>

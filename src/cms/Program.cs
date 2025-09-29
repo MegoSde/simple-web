@@ -3,7 +3,6 @@ using cms.Data;
 using cms.Extensions;
 using cms.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 

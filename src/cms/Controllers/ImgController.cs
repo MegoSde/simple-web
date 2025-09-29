@@ -52,7 +52,7 @@ public class ImgController : ControllerBase
         var t = NormalizeType(type);
         if (!KnownTypes.Contains(t)) return StatusCode(415, "unsupported_type");
 
-        var allowed = (p.Types ?? "webp")
+        var allowed = (p.Types)
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Select(NormalizeType)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -212,7 +212,7 @@ public class ImgController : ControllerBase
 
     private static string NormalizeType(string ext)
     {
-        var t = (ext ?? "").Trim().TrimStart('.').ToLowerInvariant();
+        var t = ext.Trim().TrimStart('.').ToLowerInvariant();
         return t == "jpeg" ? "jpg" : t;
     }
 }

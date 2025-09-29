@@ -1,11 +1,11 @@
 namespace cms.Models;
 
 public record MediaCreateResponse(
-    Guid id, string hash, string original_url, int width, int height, string mime
+    Guid Id, string Hash, string OriginalUrl, int Width, int Height, string Mime
 );
 
 public record MediaListItem(
-    Guid id, string hash, string original_url, int width, int height, string mime, long bytes, string? alt_text, DateTimeOffset created_at
+    Guid Id, string Hash, string OriginalUrl, int Width, int Height, string Mime, long Bytes, string? AltText, DateTimeOffset CreatedAt
 );
 
-public record PagedMediaResponse(IEnumerable<MediaListItem> items, int page, int pageSize, long total);
+public record PagedMediaResponse(IEnumerable<MediaListItem> Items, int Page, int PageSize, long Total);

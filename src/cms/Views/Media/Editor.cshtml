@@ -8,17 +8,12 @@
     ViewData["Title"] = $"Crop: {Model.Hash}";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
-.crop-wrap { position: relative; display: inline-block; max-width: 100%; }
-.crop-img { max-width: 100%; display: block; }
-.crop-rect { position:absolute; border:2px solid #00d; background: rgba(0,128,255,.15); cursor: move; }
-.handle { position:absolute; width:12px; height:12px; background:#00d; right:-6px; bottom:-6px; cursor: nwse-resize; }
-.preset-pill { margin: 0 .5rem .5rem 0; display:inline-block; }
-.preset-pill.selected { background:#0d6efd; color:#fff; border-color:#0d6efd; }
-.ratio-pill { margin: 0 .5rem .5rem 0; }
-.ratio-pill.active { background:#6c757d; color:#fff; }
-</style>
-
+<a class="backlink" href="@Url.Action("List","Media")">
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/icons.v1.svg#i-back"></use>
+    </svg>
+    Tilbage
+</a>
 <h1>Crop for @Model.Hash</h1>
 
 <div id="cropEditorRoot"

@@ -1,0 +1,64 @@
+<!-- /assets/icons.v1.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- ADD (+) -->
+    <symbol id="i-add" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+        </g>
+    </symbol>
+
+    <!-- FORMAT (sliders) -->
+    <symbol id="i-format" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18M3 12h18M3 18h18"/>
+            <circle cx="9" cy="6" r="2"/>
+            <circle cx="15" cy="12" r="2"/>
+            <circle cx="7" cy="18" r="2"/>
+        </g>
+    </symbol>
+
+    <!-- EDIT (pencil) -->
+    <symbol id="i-edit" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20h4l10-10-4-4L4 16v4z"/>
+            <path d="M13 5l4 4"/>
+        </g>
+    </symbol>
+
+    <!-- BACK (arrow-left) -->
+    <symbol id="i-back" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 6l-6 6 6 6"/>
+            <path d="M9 12h10"/>
+        </g>
+    </symbol>
+
+    <!-- DELETE (x) -->
+    <symbol id="i-delete" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l12 12M6 18L18 6"/>
+        </g>
+    </symbol>
+
+    <!-- SAVE (floppy) -->
+    <symbol id="i-save" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 4h10l4 4v12H5z"/>
+            <path d="M8 4h8v4H8z"/>
+            <path d="M8 18h8"/>
+        </g>
+    </symbol>
+
+    <!-- SAVE ALL (stacked floppies) -->
+    <symbol id="i-save-all" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- back disk (offset) -->
+            <path d="M7 2h10l4 4v12H7z"/>
+            <path d="M10 2h8v4h-8z"/>
+            <!-- front disk -->
+            <path d="M5 6h10l4 4v12H5z"/>
+            <path d="M8 6h8v4H8z"/>
+            <path d="M8 20h8"/>
+        </g>
+    </symbol>
+</svg>

@@ -14,7 +14,7 @@
         </div>
     }
 
-    <form method="post" action="/users/create">
+    <form method="post" action="@Url.Action("Create","Users")">
         @Html.AntiForgeryToken()
         <fieldset>
             <label for="UserName">Username</label>
@@ -48,7 +48,7 @@
         </fieldset>
 
         <div class="actions">
-            <a class="btn" href="/users">Cancel</a>
+            <a class="btn" href="@Url.Action("Index","Users")">Cancel</a>
             <button type="submit" class="btn">Create</button>
         </div>
     </form>

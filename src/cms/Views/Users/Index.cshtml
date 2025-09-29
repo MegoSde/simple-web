@@ -4,9 +4,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <section id="users-page">
+    <div class="page-titlebar">
     <h1>Users</h1>
-    <p><a id="users-new" class="btn" href="/users/create">New user</a></p>
-    
+    <div class="actionbar">
+        <a id="users-new" class="btn" href="@Url.Action("Index","Users")">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="/icons.v1.svg#i-add"></use></svg>
+            New user
+        </a></div>
+</div>
     <table id="users-table">
         <thead>
         <tr>
@@ -23,7 +28,7 @@
                 <td>@u.UserName</td>
                 <td>@u.Email</td>
                 <td>@string.Join(", ", u.Roles)</td>
-                <td><a href="/users/@u.Id">Edit</a></td>
+                <td><a class="table-action" href="/users/@u.Id"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="/icons.v1.svg#i-edit"></use></svg> Rediger</a></td>
             </tr>
         }
         </tbody>

@@ -42,7 +42,7 @@ public class MediaService
 
         // --- 1) Validering (MIME + størrelse) ---
         var allowed = _cfg.GetSection("Upload:AllowedMime").Get<string[]>() ?? Array.Empty<string>();
-        var mime = (mimeFromClient ?? "application/octet-stream").ToLowerInvariant();
+        var mime = mimeFromClient.ToLowerInvariant();
         if (!allowed.Contains(mime))
             throw new ApiError(415, "unsupported_mime", "MIME-type ikke tilladt.");
 
@@ -89,14 +89,14 @@ public class MediaService
         var b = hash[2..4];
 
         // --- 5) Nøgler + URL ---
-        var ext = detectedFormat.FileExtensions?.FirstOrDefault() ?? "bin";
+        var ext = detectedFormat.FileExtensions.FirstOrDefault() ?? "bin";
         var originalKey = $"{a}/{b}/{hash}.{ext}";
 
         var publicBase = (_cfg["Storage:PublicBaseUrl"] ?? "").TrimEnd('/');
         var originalUrl = string.IsNullOrEmpty(publicBase) ? originalKey : $"{publicBase}/{originalKey}";
 
         // --- 6) Upload ORIGINAL til originals-bucket ---
-        await PutObjectAsync(bucketOriginals, originalKey, originalPayload, detectedFormat.DefaultMimeType ?? mime, ct);
+        await PutObjectAsync(bucketOriginals, originalKey, originalPayload, detectedFormat.DefaultMimeType, ct);
 
         // --- 7) Upload WEBP-kopi til work-bucket (best effort) ---
         try
@@ -147,7 +147,7 @@ public class MediaService
         {
             Hash = hash,
             OriginalUrl = originalUrl,
-            Mime = detectedFormat.DefaultMimeType ?? mime,
+            Mime = detectedFormat.DefaultMimeType,
             Width = width,
             Height = height,
             Bytes = originalPayload.LongLength,
