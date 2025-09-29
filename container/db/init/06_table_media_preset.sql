@@ -51,3 +51,43 @@ CREATE TRIGGER set_updated_at_on_media_presets
     FOR EACH ROW EXECUTE FUNCTION trg_set_updated_at();
 
 COMMIT;
+
+BEGIN;
+
+CREATE OR REPLACE FUNCTION gcd_int(a integer, b integer)
+    RETURNS integer
+    LANGUAGE sql
+    IMMUTABLE
+    RETURNS NULL ON NULL INPUT
+AS $$
+WITH RECURSIVE t(x,y) AS (
+    SELECT abs(a), abs(b)
+    UNION ALL
+    SELECT y, x % y FROM t WHERE y <> 0
+)
+SELECT COALESCE(NULLIF(x,0), 1) FROM t WHERE y = 0 LIMIT 1
+$$;
+
+-- Tilføj normaliserede ratiofelter
+ALTER TABLE media_presets
+    ADD COLUMN IF NOT EXISTS ratio_w integer
+        GENERATED ALWAYS AS (
+            CASE WHEN width  > 0 AND height > 0 THEN width  / gcd_int(width, height) ELSE 0 END
+            ) STORED,
+    ADD COLUMN IF NOT EXISTS ratio_h integer
+        GENERATED ALWAYS AS (
+            CASE WHEN width  > 0 AND height > 0 THEN height / gcd_int(width, height) ELSE 0 END
+            ) STORED,
+    ADD COLUMN IF NOT EXISTS ratio_key text
+        GENERATED ALWAYS AS (
+            CASE WHEN width > 0 AND height > 0
+                     THEN (width  / gcd_int(width, height))::text
+                              || ':' ||
+                          (height / gcd_int(width, height))::text
+                 ELSE 'free' END
+            ) STORED;
+
+-- Ny indeks for hurtig gruppering/søgning på ratio
+CREATE INDEX IF NOT EXISTS idx_media_presets_ratio_key ON media_presets(ratio_key);
+
+COMMIT;

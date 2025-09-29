@@ -21,4 +21,9 @@ public class MediaPreset
 
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+    
+    // Normaliseret ratio (DB-beregnet)
+    public int RatioW { get; set; }   // 0 ved 'free'
+    public int RatioH { get; set; }   // 0 ved 'free'
+    public string RatioKey { get; set; } = "free"; // fx "256:75"
 }

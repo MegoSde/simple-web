@@ -19,7 +19,7 @@ public class CmsImageController : ControllerBase
     }
 
     // GET /cmsimg/{bucket}/{aa}/{bb}/{file}
-    [HttpGet("cmsimg/{bucket}/{a:regex(^[[0-9A-Fa-f]]{{2}}$)}/{b:regex(^[[0-9A-Fa-f]]{{2}}$)}/{file}")]
+    [HttpGet("/cmsimg/{bucket}/{a:regex(^[[0-9A-Fa-f]]{{2}}$)}/{b:regex(^[[0-9A-Fa-f]]{{2}}$)}/{file}")]
     public async Task<IActionResult> Get(
         string bucket, string a, string b, string file, CancellationToken ct)
     {

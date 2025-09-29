@@ -1,0 +1,81 @@
+@using System.Globalization
+@functions{
+    static string CropAttr(double[] arr) =>
+        string.Join(",", arr.Select(v => v.ToString("G17", CultureInfo.InvariantCulture)));
+}
+@model cms.Models.CropEditorVm
+@{
+    ViewData["Title"] = $"Crop: {Model.Hash}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+.crop-wrap { position: relative; display: inline-block; max-width: 100%; }
+.crop-img { max-width: 100%; display: block; }
+.crop-rect { position:absolute; border:2px solid #00d; background: rgba(0,128,255,.15); cursor: move; }
+.handle { position:absolute; width:12px; height:12px; background:#00d; right:-6px; bottom:-6px; cursor: nwse-resize; }
+.preset-pill { margin: 0 .5rem .5rem 0; display:inline-block; }
+.preset-pill.selected { background:#0d6efd; color:#fff; border-color:#0d6efd; }
+.ratio-pill { margin: 0 .5rem .5rem 0; }
+.ratio-pill.active { background:#6c757d; color:#fff; }
+</style>
+
+<h1>Crop for @Model.Hash</h1>
+
+<div id="cropEditorRoot"
+     data-hash="@Model.Hash"
+     data-a="@Model.A"
+     data-b="@Model.B">
+</div>
+
+<div id="presetGroupBar" class="mb-2">
+  @foreach (var g in Model.Groups)
+  {
+      <button type="button"
+              class="btn btn-sm btn-outline-secondary ratio-pill"
+              data-ratio="@g.RatioKey">
+          @g.RatioKey (@g.Count)
+      </button>
+  }
+</div>
+
+<div>
+@foreach (var p in Model.Presets)
+{
+    var crop = p.Existing is not null ? CropAttr(p.Existing) : "";
+    <button type="button"
+            class="btn btn-sm btn-outline-primary preset-pill"
+            data-p="@p.Name"
+            data-w="@p.Width"
+            data-h="@p.Height"
+            data-ratio="@p.RatioKey"
+            data-crop="@crop">
+        @p.Name (@p.Width x @p.Height)
+    </button>
+}
+</div>
+
+<div class="my-3">
+  <strong>Aktivt preset:</strong> <span id="activePreset"></span>
+  <button id="saveBtn" class="btn btn-primary btn-sm ms-2" disabled>Gem</button>
+  <button id="saveGroupBtn" class="btn btn-secondary btn-sm ms-2" disabled>Gem valgt gruppe</button>
+  <span id="savedMsg" class="text-success ms-2" style="display:none;">Gemt ✓</span>
+</div>
+
+<div class="crop-wrap" id="wrap">
+  <img src="@Model.WorkSrc" id="img" class="crop-img" />
+  <div id="rect" class="crop-rect" style="display:none;">
+    <div class="handle"></div>
+  </div>
+</div>
+
+<form id="saveForm" method="post" style="display:none;" action="">
+  @Html.AntiForgeryToken()
+  <input name="x" id="fx" />
+  <input name="y" id="fy" />
+  <input name="w" id="fw" />
+  <input name="h" id="fh" />
+</form>
+
+@section Scripts {
+    <script src="~/preset-editor.js" defer></script>
+}

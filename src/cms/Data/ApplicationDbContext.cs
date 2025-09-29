@@ -10,6 +10,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
     public DbSet<MediaPreset> MediaPresets => Set<MediaPreset>();
     
+    public DbSet<MediaAssetCrop> MediaAssetCrops => Set<MediaAssetCrop>();
+    
     protected override void OnModelCreating(ModelBuilder b)
     {
         base.OnModelCreating(b); // vigtigt når du arver fra IdentityDbContext
@@ -53,6 +55,26 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             e.Property(x => x.Types).HasColumnName("types").IsRequired();
             e.Property(x => x.CreatedAt).HasColumnName("created_at");
             e.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+            e.HasIndex(x => x.RatioKey);
+            e.Property(x => x.RatioW).HasColumnName("ratio_w");
+            e.Property(x => x.RatioH).HasColumnName("ratio_h");
+            e.Property(x => x.RatioKey).HasColumnName("ratio_key");
         });
+        
+        b.Entity<MediaAssetCrop>(e =>
+        {
+            e.ToTable("media_asset_crops");
+            e.HasIndex(x => new { x.AssetHash, x.PresetName }).IsUnique();
+            e.Property(x => x.Id).HasColumnName("id");
+            e.Property(x => x.AssetHash).HasColumnName("asset_hash");
+            e.Property(x => x.PresetName).HasColumnName("preset_name");
+            e.Property(x => x.X).HasColumnName("x");
+            e.Property(x => x.Y).HasColumnName("y");
+            e.Property(x => x.W).HasColumnName("w");
+            e.Property(x => x.H).HasColumnName("h");
+            e.Property(x => x.UpdatedBy).HasColumnName("updated_by");
+            e.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+        });
+
     }
 }
