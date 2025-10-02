@@ -12,6 +12,15 @@
                     <span>Pages</span>
                 </a>
             </li>
+            @if (isAdmin)
+            {
+                <li>
+                    <a class="@(Active("/template"))" href="@Url.Action("Index","Template")" title="Templates">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 3v3h14V6H5zm0 5v7h6v-7H5zm8 0v7h6v-7h-6z"/></svg>
+                        <span>Templates</span>
+                    </a>
+                </li>
+            }
             <li>
                 <a class="@(Active("/media"))" href="@Url.Action("List","Media")" title="Images">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 19V5a2 2 0 0 0-2-2H5C3.9 3 3 3.9 3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11A2.5 2.5 0 1 1 11 8.5 2.5 2.5 0 0 1 8.5 11zm10 6H5l4-5 3 4 2-3 4.5 6z"/></svg>

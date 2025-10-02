@@ -9,8 +9,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
     public DbSet<MediaPreset> MediaPresets => Set<MediaPreset>();
-    
     public DbSet<MediaAssetCrop> MediaAssetCrops => Set<MediaAssetCrop>();
+    public DbSet<Template> Templates => Set<Template>();
     
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -74,6 +74,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             e.Property(x => x.H).HasColumnName("h");
             e.Property(x => x.UpdatedBy).HasColumnName("updated_by");
             e.Property(x => x.UpdatedAt).HasColumnName("updated_at");
+        });
+
+        b.Entity<Template>(e =>
+        {
+            e.ToTable("templates");
+            e.HasIndex(x => x.Name).IsUnique();
+            e.Property(x => x.Id).HasColumnName("id");
+            e.Property(x => x.Name).HasColumnName("name");
+            e.Property(x => x.Version).HasColumnName("version");
+            e.Property(x => x.Root).HasColumnName("root").HasColumnType("jsonb");
+            e.Property(x => x.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("now()");
+            e.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("now()");
         });
 
     }

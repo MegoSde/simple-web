@@ -1,0 +1,32 @@
+@model List<cms.Models.Template>
+@{
+    ViewData["Title"] = "Image presets";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-titlebar">
+    <h1>Templates</h1>
+
+    <div class="actionbar">
+        <a href="@Url.Action("New","Template")" class="btn">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="/icons.v1.svg#i-add"></use></svg>
+            New template
+        </a>
+    </div>
+</div>
+
+
+<table class="table table-striped">
+    <thead>
+    <tr><th>Navn</th><th></th><th></th></tr>
+    </thead>
+    <tbody>
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>@p.Name</td>
+            <td><a href="/template/@p.Name">Rediger</a></td>
+            <td><a href="/template/@p.Name/delete">Slet</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

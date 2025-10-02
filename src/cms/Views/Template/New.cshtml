@@ -1,0 +1,23 @@
+@model cms.Models.TemplateNewForm
+@{
+    ViewData["Title"] = "Ny template";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<a class="backlink" href="@Url.Action("Index","Template")">
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/icons.v1.svg#i-back"></use>
+    </svg>
+    Tilbage
+</a>
+
+<h1>Ny template</h1>
+
+<form method="post" action="@Url.Action("New","Template")">
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <label class="form-label">Navn (slug)</label>
+        <input name="Name" class="form-control" value="@Model.Name" />
+        @Html.ValidationMessage("Name", new { @class="text-danger" })
+    </fieldset>
+    <button class="btn btn-primary" type="submit">Opret</button>
+</form>
