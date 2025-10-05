@@ -6,7 +6,6 @@ BEGIN;
 CREATE SCHEMA IF NOT EXISTS cms AUTHORIZATION CURRENT_USER;
 
 -- Set default search_path for the app user inside this database.
--- On first boot, ${POSTGRES_USER} is the superuser provided by environment.
 -- We guard with DO-block in case ALTER ROLE variant differs.
 DO $$
 DECLARE

@@ -19,9 +19,9 @@ public static class IdentityCookieExtensions
             })
             .AddRoles<ApplicationRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddSignInManager();
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
 
-        // VIGTIGT: brug Identity.Application som scheme
         services
             .AddAuthentication(options =>
             {
@@ -35,43 +35,52 @@ public static class IdentityCookieExtensions
                 o.AccessDeniedPath = "/login";
                 o.Cookie.Name = "simple_web_cms_auth";
                 o.Cookie.HttpOnly = true;
-                o.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Prod: kræv HTTPS
+                o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 o.Cookie.SameSite = SameSiteMode.Strict;
                 o.SlidingExpiration = true;
                 o.ExpireTimeSpan = TimeSpan.FromHours(8);
-                
+
                 static bool IsApi(HttpRequest r) =>
                     r.Path.StartsWithSegments("/auth") ||
                     r.Path.StartsWithSegments("/api")  ||
-                    (r.Headers.Accept.Any(a => (a ?? "").Contains("application/json", StringComparison.OrdinalIgnoreCase)));
+                    (r.Headers.Accept.Any(a => (a ?? "").Contains("application/json",
+                        StringComparison.OrdinalIgnoreCase)));
 
-                // API: returnér 401/403 i stedet for redirects
                 o.Events = new CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = ctx =>
                     {
-                        if (IsApi(ctx.Request))
-                        {
-                            ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                            return Task.CompletedTask;
-                        }
-                        ctx.Response.Redirect(ctx.RedirectUri);
-                        return Task.CompletedTask;
+                        if (IsApi(ctx.Request)) { ctx.Response.StatusCode = StatusCodes.Status401Unauthorized; return Task.CompletedTask; }
+                        ctx.Response.Redirect(ctx.RedirectUri); return Task.CompletedTask;
                     },
                     OnRedirectToAccessDenied = ctx =>
                     {
-                        if (IsApi(ctx.Request))
-                        {
-                            ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
-                            return Task.CompletedTask;
-                        }
-                        ctx.Response.Redirect(ctx.RedirectUri);
-                        return Task.CompletedTask;
+                        if (IsApi(ctx.Request)) { ctx.Response.StatusCode = StatusCodes.Status403Forbidden; return Task.CompletedTask; }
+                        ctx.Response.Redirect(ctx.RedirectUri); return Task.CompletedTask;
                     }
                 };
             });
 
         services.AddAuthorization();
+        
         return services;
+    }
+    
+    public static async Task SeedAdminAsync(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var users = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var roles = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+       
+        if (!users.Users.Any())
+        {
+            var adminRole = await roles.CreateAsync(new ApplicationRole { Name = "Admin" });
+            await roles.CreateAsync(new ApplicationRole { Name = "Editor" });
+            await roles.CreateAsync(new ApplicationRole { Name = "Developer" });
+            
+            var adminUser = new ApplicationUser { UserName = "Admin", Email = "admin@example.com", EmailConfirmed = true }; 
+            await users.CreateAsync(adminUser, "ChangeThis!123");
+            await users.AddToRoleAsync(adminUser, "Admin");
+        }
     }
 }

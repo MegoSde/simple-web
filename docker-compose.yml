@@ -24,6 +24,22 @@ services:
         limits:
           memory: 512M
           
+  flyway:
+    image: flyway/flyway:10-alpine
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      -url=jdbc:postgresql://db:${POSTGRES_PORT:-5432}/${POSTGRES_DB}
+      -user=${POSTGRES_USER}
+      -password=${POSTGRES_PASSWORD}
+      -connectRetries=60
+      migrate
+    volumes:
+      - ./container/db/init:/flyway/sql:ro
+    restart: "no"
+  
+  
   minio:
     image: minio/minio:RELEASE.2025-09-07T16-13-09Z-cpuv1
     command: server /data --console-address ":9001"
@@ -31,7 +47,7 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set-in-.env}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set-in-.env}
     volumes:
-      - ./data/minio:/data
+      - ./container/minio/data:/data
     ports:
       - "9000:9000"   # S3 API (internt brug)
       - "9001:9001"   # MinIO Console (kun internt!)
@@ -56,6 +72,6 @@ services:
       APP_MEDIA_SECRET_KEY: ${APP_MEDIA_SECRET_KEY-}
       APP_MEDIA_POLICY: ${APP_MEDIA_POLICY-app-media-policy}
     volumes:
-      - ./container/minio/init/minio-init-and-test.sh:/init/minio-init-and-test.sh:ro
-      - ./container/minio/data/minio-init-logs:/logs
-    entrypoint: [ "/bin/sh","-lc","/init/minio-init-and-test.sh" ]
+      - ./container/minio/init/minio-init.sh:/init/minio-init.sh:ro
+      - ./container/minio/logs:/logs
+    entrypoint: ["/bin/sh","-lc","tr -d '\r' < /init/minio-init.sh | /bin/sh"]
