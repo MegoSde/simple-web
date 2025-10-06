@@ -35,7 +35,7 @@ table { border-collapse: collapse; border-spacing: 0; }
     --danger-border: color-mix(in oklab, var(--danger) 55%, transparent);
 
     /* nav */
-    --nav-w-expanded: 128px;
+    --nav-w-expanded: 160px;
     --nav-w-collapsed: 64px;
     --nav-w: var(--nav-w-expanded);
     --nav-h: 56px; /* bundmenu-højde på små skærme */

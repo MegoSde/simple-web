@@ -65,6 +65,26 @@ public class TemplateController : Controller
         return Redirect($"/template/{Uri.EscapeDataString(entity.Name)}");
     }
     
+    // GET /template/{template}  (edit-form)
+    [HttpGet("{template}")]
+    public async Task<IActionResult> Edit([FromRoute] string template, CancellationToken ct)
+    {
+        var entity = await _db.Templates.FirstOrDefaultAsync(x => x.Name == template, ct);
+        if (entity is null) return NotFound();
+
+        return View("Edit", new TemplateNewForm()
+        {
+            Name = entity.Name,
+        });
+    }
+   /* 
+    [HttpGet("js/{hash}")]
+    public async Task<IActionResult> Javascript([FromRoute] string hash, CancellationToken ct)
+    {
+        return "alert('test')";
+    }*/
+    
+    
     private static bool ValidateSlug(string? slug, out string? error)
     {
         error = null;

@@ -19,5 +19,6 @@ src/cms/obj
 # Docker/Postgres data
 container/db/data/
 container/minio/data
+container/minio/logs
 data/
 .env
