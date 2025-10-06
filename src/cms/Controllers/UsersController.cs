@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace cms.Controllers;
 
 [Authorize(Roles = "Admin")]
+[AllowAnonymous]
 public class UsersController : Controller
 {
     private readonly UserManager<ApplicationUser> _users;

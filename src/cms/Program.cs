@@ -22,6 +22,8 @@ builder.Services.AddIdentityWithCookies();
 
 var app = builder.Build();
 
+await app.SeedAdminAsync();
+
 app.UseStaticFiles();
 
 app.UseRouting();
