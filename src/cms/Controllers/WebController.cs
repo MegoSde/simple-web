@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace cms.Controllers;
 
 [Authorize]
-[AllowAnonymous]
 public class WebController : Controller
 {
     [HttpGet("/")]

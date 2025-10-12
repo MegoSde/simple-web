@@ -52,13 +52,47 @@
     <!-- SAVE ALL (stacked floppies) -->
     <symbol id="i-save-all" viewBox="0 0 24 24">
         <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <!-- back disk (offset) -->
             <path d="M7 2h10l4 4v12H7z"/>
             <path d="M10 2h8v4h-8z"/>
-            <!-- front disk -->
             <path d="M5 6h10l4 4v12H5z"/>
             <path d="M8 6h8v4H8z"/>
             <path d="M8 20h8"/>
         </g>
+    </symbol>
+
+    <!-- MOVE UP (arrow pointing up) -->
+    <symbol id="i-move-up" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5l-6 6M12 5l6 6"/>
+            <path d="M12 5v14"/>
+        </g>
+    </symbol>
+
+    <!-- MOVE DOWN (arrow pointing down) -->
+    <symbol id="i-move-down" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19l-6-6M12 19l6-6"/>
+            <path d="M12 19V5"/>
+        </g>
+    </symbol>
+
+    <!-- PAGES (document with folded corner) -->
+    <symbol id="i-pages" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5z"/>
+    </symbol>
+
+    <!-- TEMPLATES (window with topbar + 2 columns) -->
+    <symbol id="i-templates" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 3v3h14V6H5zm0 5v7h6v-7H5zm8 0v7h6v-7h-6z"/>
+    </symbol>
+
+    <!-- IMAGES (photo) -->
+    <symbol id="i-images" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M21 19V5a2 2 0 0 0-2-2H5C3.9 3 3 3.9 3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11A2.5 2.5 0 1 1 11 8.5 2.5 2.5 0 0 1 8.5 11zm10 6H5l4-5 3 4 2-3 4.5 6z"/>
+    </symbol>
+
+    <!-- USERS (person + group) -->
+    <symbol id="i-users" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.33 0-8 2.17-8 5v1h16v-1c0-2.83-3.67-5-8-5z"/>
     </symbol>
 </svg>

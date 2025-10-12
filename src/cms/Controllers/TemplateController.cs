@@ -1,27 +1,33 @@
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using cms.Data;
 using cms.Models;
+using cms.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace cms.Controllers;
 [Authorize] 
-[Route("template")]
 public class TemplateController : Controller
 {
     private readonly ApplicationDbContext _db;
+    private readonly IEditorComponentService _editorComponentService;
 
-    public TemplateController(ApplicationDbContext db) => _db = db;
+    public TemplateController(ApplicationDbContext db, IEditorComponentService editorComponents)
+    {
+        _db = db;
+        _editorComponentService = editorComponents;
+    }
 
-    [HttpGet()]
+    [HttpGet("/templates")]
     public async Task<IActionResult> Index(CancellationToken ct)
     {
         var templates = await _db.Templates.OrderBy(x => x.Name).ToListAsync();
         return View("Index", templates);
     }
     
-    [HttpGet("new")]
+    [HttpGet("/templates/new")]
     public IActionResult New()
     {
         return View("New", new TemplateNewForm
@@ -31,15 +37,13 @@ public class TemplateController : Controller
     }
     
     [ValidateAntiForgeryToken]
-    [HttpPost("new")]
+    [HttpPost("/templates/new")]
     public async Task<IActionResult> Create([FromForm] TemplateNewForm vm, CancellationToken ct)
     {
         NormalizeVm(vm);
 
         if (!ValidateSlug(vm.Name, out var err)) ModelState.AddModelError(nameof(vm.Name), err!);
-        if (vm.Name.Equals("new", StringComparison.OrdinalIgnoreCase))
-            ModelState.AddModelError(nameof(vm.Name), "Navnet 'new' er reserveret.");
-
+        
         if (!ModelState.IsValid)
         {
             return View("New", vm);
@@ -66,24 +70,66 @@ public class TemplateController : Controller
     }
     
     // GET /template/{template}  (edit-form)
-    [HttpGet("{template}")]
+    [HttpGet("/template/{template}")]
     public async Task<IActionResult> Edit([FromRoute] string template, CancellationToken ct)
     {
         var entity = await _db.Templates.FirstOrDefaultAsync(x => x.Name == template, ct);
         if (entity is null) return NotFound();
 
-        return View("Edit", new TemplateNewForm()
+        return View("Edit", new TemplateEditFrom()
         {
+            OriginalName = entity.Name,
             Name = entity.Name,
+            EditorComponents = _editorComponentService.GetEditorComponents()
         });
     }
-   /* 
-    [HttpGet("js/{hash}")]
-    public async Task<IActionResult> Javascript([FromRoute] string hash, CancellationToken ct)
-    {
-        return "alert('test')";
-    }*/
     
+    [HttpGet("/template/{template}.json")]
+    public async Task<IActionResult> GetJson([FromRoute] string template, CancellationToken ct)
+    {
+        var entity = await _db.Templates.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Name == template, ct);
+        if (entity is null) return NotFound();
+
+        // Parse den lagrede root (forventet: {"components":[...]} )
+        using var doc = System.Text.Json.JsonDocument.Parse(string.IsNullOrWhiteSpace(entity.Root) ? "{}" : entity.Root);
+        var rootEl = doc.RootElement;
+
+        // Hent components eller brug tom []
+        System.Text.Json.JsonElement componentsEl;
+        if (rootEl.ValueKind == System.Text.Json.JsonValueKind.Object &&
+            rootEl.TryGetProperty("components", out var comps) &&
+            comps.ValueKind == System.Text.Json.JsonValueKind.Array)
+        {
+            componentsEl = comps.Clone();
+        }
+        else
+        {
+            using var empty = System.Text.Json.JsonDocument.Parse("[]");
+            componentsEl = empty.RootElement.Clone();
+        }
+
+        // Version som string (falder tilbage til "1" hvis ikke sat)
+        var versionString = (entity.Version > 0 ? entity.Version : 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        
+        return new JsonResult(new
+        {
+            template = entity.Name,    // fx "forside"
+            version = versionString,   // "1"
+            components = componentsEl  // behold original JSON-array
+        });
+    }
+    
+    [HttpPost("/template/{template}.json")]
+    public async Task<IActionResult> SaveJson([FromRoute] string template, [FromBody] JsonDocument body, CancellationToken ct)
+    {
+        var (ok, errors) = await _editorComponentService.SaveAsync(_db, template, body, ct);
+
+        if (!ok)
+            return UnprocessableEntity(new { errors });
+
+        return NoContent();
+    }
     
     private static bool ValidateSlug(string? slug, out string? error)
     {
@@ -101,5 +147,26 @@ public class TemplateController : Controller
     {
         vm.Name = vm.Name.Trim().ToLowerInvariant();
     }
+    
+    [HttpGet("/templates/editor.js")]
+    public IActionResult EditorJs()
+        => Content(_editorComponentService.GetEditorJavascript(), "application/javascript; charset=utf-8");
+
+    [HttpGet("/templates/editor.{hash}.js")]
+    public IActionResult EditorJsHashed([FromRoute] string hash)
+        => hash.Equals(_editorComponentService.GetEditorHash(), StringComparison.OrdinalIgnoreCase)
+            ? Content(_editorComponentService.GetEditorJavascript(), "application/javascript; charset=utf-8")
+            : NotFound();
+    
+    [HttpGet("/templates/template.js")]
+    public IActionResult TemplateJs()
+        => Content(_editorComponentService.GetTemplateJavascript(), "application/javascript; charset=utf-8");
+
+    [HttpGet("/templates/template.{hash}.js")]
+    public IActionResult TemplateJsHashed([FromRoute] string hash)
+        => hash.Equals(_editorComponentService.GetTemplateHash(), StringComparison.OrdinalIgnoreCase)
+            ? Content(_editorComponentService.GetTemplateJavascript(), "application/javascript; charset=utf-8")
+            : NotFound();
+    
     
 } 

@@ -260,3 +260,152 @@ span.btn { color: darkgray; cursor: default; }
 .ratio-pill { margin: 0 .5rem .5rem 0; }
 .ratio-pill.active { background:#6c757d; color:#fff; }
 .table-action { display:inline-flex; align-items:center; gap:.4rem; }
+
+.component { border:1px solid #e5e7eb; border-radius:.5rem; margin:.5rem 0; background: field; }
+.component__head { display:flex; align-items:center; gap:.75rem; padding:.5rem .75rem; border-bottom:1px solid #f1f5f9; }
+.component__icon img { width:256px; display:block; }
+.component__title { font-weight:600; flex:1; color:#fff; }
+.component__controls { display:flex; gap:.25rem; }
+.btn.btn--icon { width:32px; height:32px; display:inline-grid; place-items:center; border:1px solid #e5e7eb; border-radius:.375rem; background:#000; color: #fff; padding: 0; }
+.btn.btn--icon:hover { border-color:#cbd5e1; }
+.btn.btn--icon svg { width:32px; height:32px; color: #fff;}
+.component__body { padding:.75rem; }
+.component--error { border-color: #ef4444; }
+.component__errors { color: #b91c1c; font-size: .875rem; margin-left: auto; }
+.component__error + .component__error { margin-top: .25rem; }
+
+
+/* Dialog: fyld hele viewport minus 1rem kant */
+.dlg {
+    width: calc(100vw - 2rem);
+    height: calc(100vh - 2rem);
+    margin: 1rem;                 /* luft hele vejen rundt */
+    padding: 0;
+    border: none;
+    border-radius: .5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    background: #fff;
+    color: #111;
+    overflow: hidden;             /* indholdet scroller i panel, ikke selve dialogen */
+}
+
+/* Backdrop (ved showModal) */
+.dlg::backdrop {
+    background: rgba(0,0,0,.4);
+    backdrop-filter: blur(2px);
+}
+
+/* Fallback hvis showModal ikke findes: .is-open simulerer modal overlay */
+.dlg.is-open {
+    position: fixed;
+    inset: 1rem;
+    z-index: 1000;
+}
+.dlg.is-open::before { /* overlay */
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    backdrop-filter: blur(2px);
+    z-index: -1;
+}
+
+/* Panel med flexlayout – header / tools / grid / footer */
+.dlg__panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Header / footer */
+.dlg__head, .dlg__foot {
+    padding: .75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+.dlg__foot { border-top: 1px solid #e5e7eb; border-bottom: 0; margin-top: auto; }
+
+.dlg__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    font-weight: 600;
+}
+
+.dlg__close {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #6b7280;
+}
+.dlg__close:hover { color: #111; }
+
+/* Tools (søgefelt) */
+.dlg__tools {
+    padding: .75rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+.dlg__search {
+    width: 100%;
+    padding: .5rem .75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: .375rem;
+    font: inherit;
+}
+
+/* Grid med billeder – scroller */
+.dlg__grid {
+    padding: 1rem;
+    flex: 1 1 auto;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+    gap: .75rem;
+    background: #fafafa;
+}
+
+/* Thumb-kort */
+.dlg__thumb {
+    appearance: none;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    padding: .5rem;
+    border-radius: .375rem;
+    cursor: pointer;
+    text-align: left;
+    display: grid;
+    gap: .5rem;
+}
+.dlg__thumb:hover { border-color: #cbd5e1; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+
+.dlg__thumb img {
+    display: block;
+    width: 100%;
+    height: 96px;
+    object-fit: cover;
+    border-radius: .25rem;
+}
+.dlg__meta {
+    font-size: .75rem;
+    color: #6b7280;
+}
+
+/* (Valgfrit) mørk tilpasning */
+@media (prefers-color-scheme: dark) {
+    .dlg { background: #111; color: #e5e7eb; box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+    .dlg__grid { background: #0a0a0a; }
+    .dlg__head, .dlg__foot { border-color: #1f2937; }
+    .dlg__tools { border-color: #1f2937; }
+    .dlg__search { border-color: #374151; background: #0f172a; color: #e5e7eb; }
+    .dlg__thumb { border-color: #1f2937; background: #0b0f1a; }
+    .dlg__thumb:hover { border-color: #334155; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+    .dlg__meta { color: #94a3b8; }
+}
+
+/* (Valgfrit) reducerede animationer */
+@media (prefers-reduced-motion: reduce) {
+    .dlg, .dlg__thumb { transition: none !important; }
+}

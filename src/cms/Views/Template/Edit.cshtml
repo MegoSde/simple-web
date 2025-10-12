@@ -1,4 +1,4 @@
-@model cms.Models.TemplateNewForm
+@model cms.Models.TemplateEditFrom
 @{
     ViewData["Title"] = "Edit template";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,7 +12,7 @@
 
 <h1>Edit template</h1>
 
-<form method="post" action="/media/preset/@Model.OriginalName">
+<form method="post" action="/template/@Model.OriginalName">
     @Html.AntiForgeryToken()
     <input type="hidden" name="OriginalName" value="@Model.OriginalName" />
     <fieldset>
@@ -22,3 +22,58 @@
     </fieldset>
     <button class="btn btn-primary" type="submit">Save</button>
 </form>
+<h2>Layout:</h2>
+<div id="template" class="template-canvas"></div>
+
+<fieldset>
+    <label class="form-label" for="editorControllerSelect">Tilføj component</label>
+    <div class="input-group">
+        <select id="editorControllerSelect"
+                name="SelectedEditorController"
+                disabled
+                aria-disabled="true">
+            <option value="" selected disabled>Vælg component…</option>
+            @foreach (var ctrl in Model.EditorComponents)
+            {
+                <option value="@ctrl">@ctrl</option>
+            }
+        </select>
+        <button id="addEditorControllerBtn"
+                class="btn btn-secondary"
+                type="button"
+                disabled
+                aria-disabled="true">
+            Add
+        </button>
+    </div>
+</fieldset>
+
+<dialog id="imagepicker" class="dlg" aria-label="Choose image">
+    <form method="dialog" class="dlg__panel">
+        <header class="dlg__head">
+            <strong>Choose image</strong>
+            <button type="submit" class="dlg__close" value="cancel" aria-label="Close">×</button>
+        </header>
+
+        <section class="dlg__tools">
+            <input class="dlg__search" type="search" placeholder="Search images…" autocomplete="off">
+        </section>
+
+        <section class="dlg__grid" aria-live="polite" aria-busy="true">
+            <!-- first open: grid will be filled by JS -->
+        </section>
+
+        <footer class="dlg__foot">
+            <button type="submit" class="btn dlg__cancel" value="cancel">Cancel</button>
+        </footer>
+    </form>
+</dialog>
+
+
+@{
+    var templateHash = ViewBag.TemplateHash as string;
+    var templatePath = string.IsNullOrWhiteSpace(templateHash)
+        ? Url.Action("TemplateJs", "template")
+        : Url.Action("TemplateJsHashed", "template",  new { @templateHash });
+}
+<script src="@templatePath" defer></script>

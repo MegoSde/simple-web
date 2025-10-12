@@ -47,18 +47,59 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         b.Entity<MediaPreset>(e =>
         {
             e.ToTable("media_presets");
+
             e.HasIndex(x => x.Name).IsUnique();
+
             e.Property(x => x.Id).HasColumnName("id");
-            e.Property(x => x.Name).HasColumnName("name");
+            e.Property(x => x.Name).HasColumnName("name").HasMaxLength(64).IsRequired();
+
             e.Property(x => x.Width).HasColumnName("width");
             e.Property(x => x.Height).HasColumnName("height");
-            e.Property(x => x.Types).HasColumnName("types").IsRequired();
-            e.Property(x => x.CreatedAt).HasColumnName("created_at");
-            e.Property(x => x.UpdatedAt).HasColumnName("updated_at");
-            e.HasIndex(x => x.RatioKey);
-            e.Property(x => x.RatioW).HasColumnName("ratio_w");
-            e.Property(x => x.RatioH).HasColumnName("ratio_h");
-            e.Property(x => x.RatioKey).HasColumnName("ratio_key");
+
+            e.Property(x => x.Types).HasColumnName("types").HasMaxLength(128).IsRequired();
+
+            e.Property(x => x.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("now()");
+            e.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("now()");
+
+            // === Computed / GENERATED ALWAYS kolonner ===
+            e.Property(x => x.RatioW)
+                .HasColumnName("ratio_w")
+                .HasComputedColumnSql(@"
+        CASE
+            WHEN width > 0 AND height > 0 THEN width / gcd_int(width, height)
+            ELSE 0
+        END", stored: true)
+                .ValueGeneratedOnAddOrUpdate();
+
+            e.Property(x => x.RatioH)
+                .HasColumnName("ratio_h")
+                .HasComputedColumnSql(@"
+        CASE
+            WHEN width > 0 AND height > 0 THEN height / gcd_int(width, height)
+            ELSE 0
+        END", stored: true)
+                .ValueGeneratedOnAddOrUpdate();
+
+            e.Property(x => x.RatioKey)
+                .HasColumnName("ratio_key")
+                .HasMaxLength(32)
+                .HasComputedColumnSql(@"
+        CASE
+            WHEN width > 0 AND height > 0 THEN (width / gcd_int(width, height))::text || ':' || (height / gcd_int(width, height))::text
+            ELSE 'free'
+        END", stored: true)
+                .ValueGeneratedOnAddOrUpdate();
+
+            // (Valgfrit, men “belt & suspenders”) – tving EF til aldrig at sende værdier i INSERT/UPDATE:
+            e.Property(x => x.RatioW).Metadata.SetBeforeSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
+            e.Property(x => x.RatioW).Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
+            e.Property(x => x.RatioH).Metadata.SetBeforeSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
+            e.Property(x => x.RatioH).Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
+            e.Property(x => x.RatioKey).Metadata.SetBeforeSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
+            e.Property(x => x.RatioKey).Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
+
+            // Index på ratio_key – brug samme navn som i din SQL, så EF ikke forsøger at lave et ekstra:
+            e.HasIndex(x => x.RatioKey).HasDatabaseName("idx_media_presets_ratio_key");
         });
         
         b.Entity<MediaAssetCrop>(e =>

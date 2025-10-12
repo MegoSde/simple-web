@@ -19,28 +19,57 @@ public class MediaController : Controller {
     _svc = svc; _db = db;
   }
 
-  // GET /media  -> returnerer HTML (browser) eller JSON (API) afhængigt af Accept/form
+  // GET /media  -> HTML (browser) eller JSON (API) afhængigt af Accept
   [HttpGet("/media")]
   public async Task<IActionResult> List([FromQuery] int page = 1, [FromQuery] int pageSize = 24)
   {
-    page = Math.Max(1, page);
-    pageSize = Math.Clamp(pageSize, 1, 100);
+      page = Math.Max(1, page);
+      pageSize = Math.Clamp(pageSize, 1, 100);
 
-    var q = _db.MediaAssets.AsNoTracking().OrderByDescending(x => x.CreatedAt);
-    var total = await q.CountAsync();
-    var items = await q.Skip((page - 1) * pageSize).Take(pageSize).Select(x => new MediaListItem(
-      x.Id, x.Hash, x.OriginalUrl, x.Width, x.Height, x.Mime, x.Bytes, x.AltText, x.CreatedAt
-    )).ToListAsync();
+      var q = _db.MediaAssets
+          .AsNoTracking()
+          .OrderByDescending(x => x.CreatedAt);
 
-    var model = new PagedMediaResponse(items, page, pageSize, total);
-    
-    var wantsHtml =
-      Request.Headers.TryGetValue("Accept", out var acc) &&
-      acc.ToString().Contains("text/html", StringComparison.OrdinalIgnoreCase);
+      var total = await q.CountAsync();
 
-    if (wantsHtml) return View("Index", model);
+      // Content negotiation
+      var wantsHtml =
+          Request.Headers.TryGetValue("Accept", out var acc) &&
+          acc.ToString().IndexOf("text/html", StringComparison.OrdinalIgnoreCase) >= 0;
 
-    return Ok(model); // JSON fallback
+      if (wantsHtml)
+      {
+          var items = await q.Skip((page - 1) * pageSize)
+              .Take(pageSize)
+              .Select(x => new MediaListItem(
+                  x.Id, x.Hash, x.OriginalUrl, x.Width, x.Height, x.Mime, x.Bytes, x.AltText, x.CreatedAt
+              ))
+              .ToListAsync();
+
+          var model = new PagedMediaResponse(items, page, pageSize, total);
+          return View("Index", model);
+      }
+
+      // JSON: kun altText og url (ce/57/<hash>)
+      var jsonItems = await q
+          .Skip((page - 1) * pageSize)
+          .Take(pageSize)
+          .Select(x => new
+          {
+              altText = x.AltText ?? "",
+              url = x.Hash.Length >= 4
+                  ? x.Hash.Substring(0, 2) + "/" + x.Hash.Substring(2, 2) + "/" + x.Hash
+                  : x.Hash
+          })
+          .ToListAsync();
+
+      return Ok(new
+      {
+          page,
+          pageSize,
+          total,
+          items = jsonItems
+      });
   }
   
   // GET /media/new -> HTML form

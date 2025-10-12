@@ -19,6 +19,7 @@ builder.Services.AddControllersWithViews();
 builder.AddAppHealth();
 builder.Services.AddIdentityWithCookies();
 
+builder.Services.AddComponents(Path.Combine(builder.Environment.ContentRootPath, "EditorComponents\\js"), typeof(Program).Assembly);
 
 var app = builder.Build();
 
