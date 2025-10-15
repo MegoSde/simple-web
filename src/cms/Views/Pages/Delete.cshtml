@@ -1,0 +1,21 @@
+@model cms.Models.PageDelete
+@{
+    ViewData["Title"] = "delete Page";
+    Layout = "_Layout";
+}
+<h1>Delete page</h1>
+<p class="text-muted"><strong>@Model.Title</strong> — <code>@Model.FullPath</code></p>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    
+    <div>
+        <label for="FullPathConfirm">Bekræft skift ved at skrive stien til siden</label><br/>
+        <input name="FullPathConfirm" id="FullPathConfirm" />
+        @Html.ValidationMessage("FullPathConfirm", new { @class="text-danger" })
+    </div>
+    <div>
+        <button type="submit">Save settings</button>
+        <a href="/pages/@Model.Id/settings">Cancel</a>
+    </div>
+</form>

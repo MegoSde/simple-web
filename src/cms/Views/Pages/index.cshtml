@@ -1,0 +1,63 @@
+@model IEnumerable<cms.Models.PageNodeDto>
+@{
+    ViewData["Title"] = "Pages";
+    Layout = "_Layout";
+}
+
+<h1 style="display:flex; align-items:center; justify-content:space-between;">
+  <span>Pages</span>
+  <span class="legend">
+    <span class="legend-item"><span class="status-dot status-green"></span>Live</span>
+    <span class="legend-item"><span class="status-dot status-yellow"></span>Live + newer draft</span>
+    <span class="legend-item"><span class="status-dot status-red"></span>Not live</span>
+  </span>
+</h1>
+
+<table class="tbl">
+  <thead>
+    <tr>
+      <th>Status</th>
+      <th>URL</th>
+      <th>Title</th>
+      <th>Menu</th>
+      <th>Sitemap</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+@foreach (var n in Model)
+{
+    var statusClass = n.HasPublished ? (n.HasNewerDraft ? "status-yellow" : "status-green") : "status-red";
+    <tr>
+      <td><span class="status-dot @statusClass"></span></td>
+      <td class="path">@n.FullPath</td>
+      <td>@n.Title</td>
+      <td>
+        @if (n.InMenu)
+        {
+          <svg class="ico" aria-label="In menu"><use href="/icons.v1.svg#i-check"></use></svg>
+        }
+        else
+        {
+          <svg class="ico" aria-label="Not in menu"><use href="/icons.v1.svg#i-notchecked"></use></svg>
+        }
+      </td>
+      <td>
+        @if (n.InSitemap)
+        {
+          <svg class="ico" aria-label="In sitemap"><use href="/icons.v1.svg#i-check"></use></svg>
+        }
+        else
+        {
+          <svg class="ico" aria-label="Not in sitemap"><use href="/icons.v1.svg#i-notchecked"></use></svg>
+        }
+      </td>
+      <td>
+        <a href="/pages/@(n.Id)/settings">Settings</a>
+        <a href="/pages/@(n.Id)/edit">Edit</a>
+        <a href="/pages/@(n.Id)/append">Append</a>
+      </td>
+    </tr>
+}
+  </tbody>
+</table>

@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using cms.Data;
 using cms.EditorComponents;
 using cms.Models;
@@ -13,6 +14,7 @@ namespace cms.Services;
 public sealed class EditorComponentService : IEditorComponentService
 {
     private readonly Dictionary<string, IEditorComponent> _editorComponents;
+    private readonly Dictionary<string, JsonObject> _defs;
     private readonly string _javascriptPath;
     
     private readonly string _editorJavascriptBundle;
@@ -28,6 +30,7 @@ public sealed class EditorComponentService : IEditorComponentService
         var assemblies = (scanAssemblies?.ToArray() ?? AppDomain.CurrentDomain.GetAssemblies());
         var editorComponentType = typeof(IEditorComponent);
         _editorComponents = new Dictionary<string, IEditorComponent>();
+        _defs = new Dictionary<string, JsonObject>();
 
         foreach (var asm in assemblies)
         {
@@ -42,7 +45,17 @@ public sealed class EditorComponentService : IEditorComponentService
                 if (t.GetConstructor(Type.EmptyTypes) is null) continue;
 
                 if (Activator.CreateInstance(t) is IEditorComponent instance)
+                {
                     _editorComponents.Add(instance.Type, instance);
+                    var json = new JsonObject
+                    {
+                        ["type"] = instance.Type,
+                        ["v"] = instance.Version,
+                        ["data"] = instance.InitJson()
+
+                    };
+                    _defs.Add(instance.Type,json);
+                }
             }
         }
 
@@ -88,10 +101,16 @@ public sealed class EditorComponentService : IEditorComponentService
         _templateJavascriptHash = Convert.ToHexString(hashTemplateBytes).ToLowerInvariant();
     }
 
+    public JsonObject InitJson(string component)
+    {
+        return !_defs.TryGetValue(component, out var json) ? new JsonObject { } : json;
+    }
     public string[] GetEditorComponents()
     {
         return _editorComponents.Keys.Order().ToArray();
     }
+    
+    
 
     public string JavascriptPath => _javascriptPath;
 

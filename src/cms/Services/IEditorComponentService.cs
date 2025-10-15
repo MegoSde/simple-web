@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using cms.Data;
 using cms.Models;
 
@@ -16,6 +17,8 @@ public interface IEditorComponentService
     string GetTemplateHash();
 
     string[] GetEditorComponents();
+
+    public JsonObject InitJson(string component);
     
     string JavascriptPath { get; }
     

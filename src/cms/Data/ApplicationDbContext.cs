@@ -11,6 +11,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<MediaPreset> MediaPresets => Set<MediaPreset>();
     public DbSet<MediaAssetCrop> MediaAssetCrops => Set<MediaAssetCrop>();
     public DbSet<Template> Templates => Set<Template>();
+    public DbSet<PageNodeDto> SiteNodes => Set<PageNodeDto>();
+    public DbSet<PageResult> AddPageResults => Set<PageResult>(); // raw-sql result
+    public DbSet<cms.Models.DeletePageResult> DeletePageResults => Set<cms.Models.DeletePageResult>();
     
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -127,6 +130,43 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             e.Property(x => x.Root).HasColumnName("root").HasColumnType("jsonb");
             e.Property(x => x.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("now()");
             e.Property(x => x.UpdatedAt).HasColumnName("updated_at").HasDefaultValueSql("now()");
+        });
+        
+        // Map PageNodeDto til view cms.site_nodes
+        b.Entity<PageNodeDto>(eb =>
+        {
+            eb.HasNoKey();
+            eb.ToView("site_nodes", schema: "cms");
+            eb.Property(x => x.Id).HasColumnName("id");
+            eb.Property(x => x.ParentId).HasColumnName("parent_id");
+            eb.Property(x => x.FullPath).HasColumnName("full_path");
+            eb.Property(x => x.Slug).HasColumnName("slug");
+            eb.Property(x => x.Title).HasColumnName("title");
+            eb.Property(x => x.Depth).HasColumnName("depth");
+            eb.Property(x => x.InMenu).HasColumnName("in_menu");
+            eb.Property(x => x.InSitemap).HasColumnName("in_sitemap");
+            eb.Property(x => x.LatestVersionNo).HasColumnName("latest_version_no");
+            eb.Property(x => x.PublishedVersionNo).HasColumnName("published_version_no");
+            eb.Property(x => x.HasPublished).HasColumnName("has_published");
+            eb.Property(x => x.HasNewerDraft).HasColumnName("has_newer_draft");
+            eb.Property(x=>x.LatestTemplateId).HasColumnName("latest_template_id");
+        });
+        
+        b.Entity<PageResult>(eb =>
+        {
+            eb.HasNoKey();
+            eb.ToView(null);
+            eb.Property(p => p.New_Page_Id).HasColumnName("new_page_id");
+            eb.Property(p => p.New_Version_No).HasColumnName("new_version_no");
+        });
+        
+        b.Entity<cms.Models.DeletePageResult>(eb =>
+        {
+            eb.HasNoKey();
+            eb.ToView(null);
+            eb.Property(x => x.Deleted_Page_Id).HasColumnName("deleted_page_id");
+            eb.Property(x => x.Deleted_Path).HasColumnName("deleted_path");
+            eb.Property(x => x.Deleted_Count).HasColumnName("deleted_count");
         });
 
     }

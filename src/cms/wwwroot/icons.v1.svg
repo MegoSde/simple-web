@@ -7,6 +7,18 @@
         </g>
     </symbol>
 
+    <symbol id="i-check" viewBox="0 0 24 24">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17l-5-5"/>
+        </g>
+    </symbol>
+
+    <symbol id="i-notchecked" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".35">
+        <circle cx="12" cy="12" r="9"/>
+    </g>
+    </symbol>
+
     <!-- FORMAT (sliders) -->
     <symbol id="i-format" viewBox="0 0 24 24">
         <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

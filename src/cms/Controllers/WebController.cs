@@ -12,11 +12,4 @@ public class WebController : Controller
         // Viser Views/Web/Index.cshtml
         return View();
     }
-
-    [HttpGet("/Pages")]
-    public IActionResult Pages()
-    {
-
-        return View();
-    }
 }

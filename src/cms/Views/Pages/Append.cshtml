@@ -1,0 +1,50 @@
+@model cms.Models.AddChildPageInput
+@{
+    ViewData["Title"] = "Append page";
+    Layout = "_Layout";
+}
+
+<h1>Append page</h1>
+<p class="muted">Parent: <strong>@Model.ParentTitle</strong> (<code id="ParentUrl" data-parent-url="@Model.ParentFullPath">@Model.ParentFullPath</code>)</p>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div>
+        <label for="Title">Title</label><br/>
+        <input name="Title" id="Title"/>
+        @Html.ValidationMessage("Title", new { @class="text-danger" })
+    </div>
+    <div>
+        <label for="Slug">Slug</label><br/>
+        <input name="Slug" id="Slug" readonly aria-readonly="true"/>
+        @Html.ValidationMessage("Slug", new { @class="text-danger" })
+    </div>
+    <div>
+        <div class="muted">URL:</div>
+        <code class="muted" id="ComposedUrl"></code>
+    </div>
+    <div>
+        <input type="hidden" name="InMenu" value="false" />
+        <label><input name="InMenu" type="checkbox" value="true"/> In menu</label>
+        <input type="hidden" name="InSitemap" value="false" />
+        <label><input name="InSitemap" type="checkbox" value="true"/> In sitemap</label>
+    </div>
+    <div>
+        <label for="TemplateId">Template</label><br/>
+        <select name="TemplateId" id="TemplateId" required>
+            <option value="">-- choose template --</option>
+            @foreach (var t in Model.Templates)
+            {
+                <option value="@t.Id">@t.Name</option>
+            }
+        </select>
+        @Html.ValidationMessage("TemplateId", new { @class="text-danger" })
+    </div>
+    
+
+    <div>
+        <button type="submit">Create</button>
+        <a href="/pages">Cancel</a>
+    </div>
+</form>
+<script src="/pages-append.js"></script>

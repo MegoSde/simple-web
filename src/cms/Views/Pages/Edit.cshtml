@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "Edit page (TBDL)";
+    Layout = "_Layout";
+    var title = ViewData["PageTitle"] as string ?? "(untitled)";
+    var path = ViewData["PagePath"] as string ?? "";
+}
+<h1>Edit: @title</h1>
+<p><code>@path</code></p>
+<p>Editor TBDL – her kommer content-editoren.</p>
+<p><a href="/pages">Back to list</a></p>

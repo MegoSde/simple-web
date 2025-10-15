@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Nodes;
 using cms.Models;
 
 namespace cms.EditorComponents;
@@ -8,6 +9,10 @@ internal class ContentEditor : IEditorComponent
     public string Type => "content";
     public int Version => 1;
     
+    public JsonObject InitJson() => new JsonObject
+    {
+        ["body"] = "Content...",
+    };
     public ValidationResult ValidateSettings(System.Text.Json.JsonElement settings)
     {
         return ValidationResult.Success();

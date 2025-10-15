@@ -1,0 +1,50 @@
+@model cms.Models.PageSettingsWm
+    @{
+    ViewData["Title"] = "Page settings";
+    Layout = "_Layout";
+}
+
+<h1>Settings</h1>
+<p class="text-muted"><strong>@Model.Title</strong> — <code>@Model.FullPath</code></p>
+
+@if (TempData["ok"] is string ok && !string.IsNullOrWhiteSpace(ok)) {
+    <div>@ok</div>
+}
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div>
+        
+        <label><input name="InMenu" type="checkbox" value="true" @(Model.InMenu ? "checked" : "")/> In menu</label>
+        <input type="hidden" name="InMenu" value="false" />
+        <label><input type="checkbox" name="InSitemap" value="true" @(Model.InSitemap ? "checked" : "")/> In sitemap</label>
+        <input type="hidden" name="InSitemap" value="false"/>
+    </div>
+
+    <div>
+        <label for="TemplateId">Template</label><br/>
+        <select name="TemplateId" id="TemplateId" required style="min-width:280px;">
+            @foreach (var t in Model.Templates)
+            {
+                <option value="@t.Id" @(t.Id == Model.TemplateId ? "selected" : "")>@t.Name</option>
+            }
+        </select>
+        <div class="text-muted" style="font-size:12px;margin-top:4px;">
+            Nuværende: <strong>@Model.CurrentTemplateName</strong>. Ved skift slettes alt indhold og siden initieres fra templaten.
+        </div>
+    </div>
+
+    <div>
+        <label for="TemplateConfirm">Bekræft skift ved at skrive det <em>valgte</em> template-navn</label><br/>
+        <input name="TemplateConfirm" id="TemplateConfirm" style="min-width:280px;" />
+        @Html.ValidationMessage("TemplateConfirm", new { @class="text-danger" })
+    </div>
+    <div>
+        <a href="/pages/@Model.Id/delete" class="delete">delete</a>
+    </div>
+
+    <div>
+        <button type="submit">Save settings</button>
+        <a href="/pages">Cancel</a>
+    </div>
+</form>

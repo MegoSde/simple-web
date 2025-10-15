@@ -393,6 +393,18 @@ span.btn { color: darkgray; cursor: default; }
     color: #6b7280;
 }
 
+.tbl { width:100%; border-collapse:collapse; font-size:14px; }
+.tbl th, .tbl td { padding:8px 10px; border-bottom:1px solid #eee; vertical-align:middle; }
+.status-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+.status-green { background:#1a7f37; }
+.status-yellow { background:#f59e0b; }
+.status-red { background:#dc2626; }
+.path { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:#ccc; }
+.muted { color:#ccc; }
+.legend { display:flex; gap:16px; align-items:center; margin:.25rem 0 1rem; }
+.legend-item { display:flex; gap:6px; align-items:center; font-size:12px; color:#6b7280; }
+.ico { width:16px; height:16px; vertical-align:-2px; }
+
 /* (Valgfrit) mørk tilpasning */
 @media (prefers-color-scheme: dark) {
     .dlg { background: #111; color: #e5e7eb; box-shadow: 0 10px 30px rgba(0,0,0,.6); }

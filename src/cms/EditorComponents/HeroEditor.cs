@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Nodes;
 using cms.Models;
 
 namespace cms.EditorComponents;
@@ -7,6 +8,12 @@ internal class HeroEditor : IEditorComponent
 {
     public string Type => "hero";
     public int Version => 1;
+    
+    public JsonObject InitJson() => new JsonObject
+    {
+        ["title"] = "Angiv title",
+        ["imgId"] = ""
+    };
     
     public ValidationResult ValidateSettings(System.Text.Json.JsonElement settings)
     {
