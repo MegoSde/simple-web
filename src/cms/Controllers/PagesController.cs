@@ -420,10 +420,7 @@ public class PagesController : Controller
                         ["settings"] = c.Settings ?? new JsonObject()
                     };
                     return obj;
-                }).ToArray()),
-                ["settings"] = payload.Content.Settings is null
-                    ? new JsonObject()
-                    : JsonNode.Parse(System.Text.Json.JsonSerializer.Serialize(payload.Content.Settings))!.AsObject()
+                }).ToArray())
             };
 
             // 7) Gem via stored procedure cms.save_page (…) som opretter ny version_no

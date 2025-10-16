@@ -1,21 +1,13 @@
 CREATE OR REPLACE FUNCTION cms.get_published_page_by_slug(p_path text)
 RETURNS TABLE (
-  page_id uuid,
-  version_id uuid,
   full_path text,
   title text,
-  version_no integer,
-  template_id uuid,
   content jsonb,
   published_at timestamptz
 ) LANGUAGE sql AS $$
 SELECT
-    p.id,
-    pv.id,
     p.full_path,
     p.title,
-    pv.version_no,
-    pv.template_id,
     pv.content,
     pv.published_at
 FROM pages p

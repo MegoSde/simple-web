@@ -17,5 +17,5 @@ public class PageSettingsWm
     // indstillinger
     [Required]public bool InMenu { get; set; }
     [Required]public bool InSitemap { get; set; }
-    [Required] public string? TemplateConfirm { get; set; }
+    public string? TemplateConfirm { get; set; }
 }
