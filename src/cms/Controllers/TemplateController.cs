@@ -148,16 +148,6 @@ public class TemplateController : Controller
         vm.Name = vm.Name.Trim().ToLowerInvariant();
     }
     
-    [HttpGet("/templates/editor.js")]
-    public IActionResult EditorJs()
-        => Content(_editorComponentService.GetEditorJavascript(), "application/javascript; charset=utf-8");
-
-    [HttpGet("/templates/editor.{hash}.js")]
-    public IActionResult EditorJsHashed([FromRoute] string hash)
-        => hash.Equals(_editorComponentService.GetEditorHash(), StringComparison.OrdinalIgnoreCase)
-            ? Content(_editorComponentService.GetEditorJavascript(), "application/javascript; charset=utf-8")
-            : NotFound();
-    
     [HttpGet("/templates/template.js")]
     public IActionResult TemplateJs()
         => Content(_editorComponentService.GetTemplateJavascript(), "application/javascript; charset=utf-8");

@@ -231,3 +231,53 @@ END IF;
   RETURN NEXT;
 END;
 $$;
+
+create or replace function cms.cms_get_page_for_edit(
+  p_page_id uuid,
+  p_version_text text default null
+)
+returns jsonb
+language plpgsql
+as $$
+declare
+v_version int;
+  v_content jsonb;
+begin
+  -- find ønsket eller seneste version
+  if nullif(trim(p_version_text), '') is null then
+select pv.version_no
+into v_version
+from page_versions pv
+where pv.page_id = p_page_id
+order by pv.version_no desc
+    limit 1;
+else
+begin
+      v_version := trim(p_version_text)::int;
+exception when invalid_text_representation then
+      raise exception 'INVALID_VERSION_NUMBER' using errcode = 'P0001';
+end;
+end if;
+
+  if v_version is null then
+    raise exception 'VERSION_NOT_FOUND' using errcode = 'P0001';
+end if;
+
+  -- hent content for versionen
+select pv.content
+into v_content
+from page_versions pv
+where pv.page_id   = p_page_id
+  and pv.version_no = v_version;
+
+if v_content is null then
+    raise exception 'PAGE_CONTENT_NOT_FOUND' using errcode = 'P0001';
+end if;
+
+return jsonb_build_object(
+        'pageId',  p_page_id,
+        'version', v_version,
+        'content', v_content  -- brug evt. lille c for konsistens
+       );
+end
+$$;

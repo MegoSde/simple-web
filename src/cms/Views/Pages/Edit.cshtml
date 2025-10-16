@@ -4,7 +4,50 @@
     var title = ViewData["PageTitle"] as string ?? "(untitled)";
     var path = ViewData["PagePath"] as string ?? "";
 }
-<h1>Edit: @title</h1>
-<p><code>@path</code></p>
-<p>Editor TBDL – her kommer content-editoren.</p>
-<p><a href="/pages">Back to list</a></p>
+<a class="backlink" href="@Url.Action("Index","Pages")">
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/icons.v1.svg#i-back"></use>
+    </svg>
+    Tilbage
+</a>
+
+<h1>Edit Page - @ViewData["PageTitle"]</h1>
+
+
+   
+<h2>Content:</h2>
+<form method="post" action="/pages/@ViewData["PageId"]/publish" class="inline">
+    @Html.AntiForgeryToken()
+    <button type="submit">Publish</button>
+</form>
+<div id="page-content" class="page-canvas"></div>
+
+<dialog id="imagepicker" class="dlg" aria-label="Choose image">
+    <form method="dialog" class="dlg__panel">
+        <header class="dlg__head">
+            <strong>Choose image</strong>
+            <button type="submit" class="dlg__close" value="cancel" aria-label="Close">×</button>
+        </header>
+
+        <section class="dlg__tools">
+            <input class="dlg__search" type="search" placeholder="Search images…" autocomplete="off">
+        </section>
+
+        <section class="dlg__grid" aria-live="polite" aria-busy="true">
+            <!-- first open: grid will be filled by JS -->
+        </section>
+
+        <footer class="dlg__foot">
+            <button type="submit" class="btn dlg__cancel" value="cancel">Cancel</button>
+        </footer>
+    </form>
+</dialog>
+
+
+@{
+    var editorHash = ViewBag.EditorHash as string;
+    var editorPath = string.IsNullOrWhiteSpace(editorHash)
+        ? Url.Action("EditorJs", "pages")
+        : Url.Action("EditorJsHashed", "pages",  new { @editorHash });
+}
+<script src="@editorPath" defer></script>

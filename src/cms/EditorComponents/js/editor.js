@@ -1,208 +1,205 @@
-// editor-controls.js
-// editor.js  (loaded before any component files)
 (function () {
-    const registry = new Map(); // key = `${type}@${version}`, value = component descriptor
-    const byType = new Map();   // type -> array of versions (sorted desc)
-
-    function key(type, version) { return `${type}@${version}`; }
-
-    function register(descriptor) {
-        // descriptor: { type, version, label, add(ctx) }
-        const k = key(descriptor.type, descriptor.version);
-        
-        registry.set(k, descriptor);
-
-        const arr = byType.get(descriptor.type) || [];
-        if (!arr.includes(descriptor.version)) arr.push(descriptor.version);
-        arr.sort((a, b) => b - a); // keep highest first
-        byType.set(descriptor.type, arr);
+    // --- små utils ---
+    const qs  = (s, r=document) => r.querySelector(s);
+    const qsa = (s, r=document) => Array.from(r.querySelectorAll(s));
+    const guidRe = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+    function getPageIdFromUrl() {
+        const m = location.pathname.match(guidRe);
+        if (m) return m[0];
+        const u = new URL(location.href);
+        const id = u.searchParams.get("id");
+        if (id && guidRe.test(id)) return id;
+        throw new Error("Missing page id in URL");
+    }
+    function getCsrf() {
+        return qs('input[name="__RequestVerificationToken"]')?.value || "";
     }
 
-    function getLatest(type) {
-        const vers = byType.get(type);
-        if (!vers || vers.length === 0) return null;
-        return registry.get(key(type, vers[0]));
-    }
+    // --- Editor kernel ---
+    const Editor = {
+        _registry: Object.create(null),
+        _renderedRoot: null,
+        _pageId: null,
+        _version: null,
+        _content: { components: [], settings: {} },
 
-    // Creates a fresh component node with common parts set
-    function createNode(type, version, initProps = {}) {
-        return {
-            type,
-            v: version,
-            props: { ...initProps },
-            children: [] // container components can use this
+        register(def) {
+        if (!def?.type) return;
+        this._registry[def.type] = def;
+    },
+
+    async init() {
+        this._renderedRoot = qs("#page-content");
+        if (!this._renderedRoot) return;
+        this._pageId = getPageIdFromUrl();
+
+        await this.load();   // <- enkel load
+        this.render();
+
+        // Save-knap (du kan også binde til din eksisterende knap)
+        const saveBtn = document.createElement("button");
+        saveBtn.className = "btn btn--primary";
+        saveBtn.textContent = "Save";
+        saveBtn.addEventListener("click", () => this.save());
+        this._renderedRoot.parentElement.insertBefore(saveBtn, this._renderedRoot);
+    },
+
+    async load() {
+        const res = await fetch(`/pages/${this._pageId}.json`, { headers: { Accept: "application/json" }});
+        if (!res.ok) throw new Error("Failed to load page json");
+        const j = await res.json();
+        this._version = j.version ?? j.Version ?? null;
+
+        // indhold kan være content eller data afhængigt af backend
+        const content = j.content || j.data || {};
+        this._content.components = Array.isArray(content.components) ? content.components : (content.Components || []);
+        this._content.settings   = content.settings || content.Settings || {};
+    },
+
+    render() {
+        this._renderedRoot.innerHTML = "";
+        const ctx = {
+            root: this._renderedRoot,
+            openImagePickerDialog: () => this.openImagePickerDialog()
         };
-    }
 
-    // Super-simple placeholder renderer to #template (you can replace with your real renderer)
-    function renderNode(node) {
-        const container = document.createElement("div");
-        container.className = "component";
-        container.dataset.type = node.type;
-        container.dataset.version = String(node.v);
+        for (const comp of this._content.components) {
+            const def = this._registry[comp.type] || null;
+            if (!def || typeof def.load !== "function") {
+                console.warn("Unknown component type", comp.type);
+                continue;
+            }
 
-        const header = document.createElement("div");
-        header.className = "component__head";
-        header.textContent = `${node.type}@${node.v}`;
+            // comp.data kan ligge fladt i nogle skemaer – normaliser
+            const data = comp.data ?? comp.Data ?? comp;
+        
+            def.load(ctx, data);
+        }
+    },
 
-        const body = document.createElement("div");
-        body.className = "component__body";
-        body.textContent = JSON.stringify(node.props);
+    async save() {
+        // Saml JSON ved at kalde getJson() pr. component
+        const payload = {
+            pageId: this._pageId,
+            version: this._version,
+            content: {
+                components: qsa(".component", this._renderedRoot)
+                .map(ctrl => {
+                    const type = ctrl.dataset.type;
+                    const def = this._registry[type];
+                    if (!def || typeof def.getJson !== "function") return null;
+                    return def.getJson(ctrl);
+                })
+                .filter(Boolean)
+            }
+        };
 
-        container.appendChild(header);
-        container.appendChild(body);
-        return container;
-    }
+        const res = await fetch(`/pages/${this._pageId}.json`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "RequestVerificationToken": getCsrf()
+            },
+            body: JSON.stringify(payload)
+        });
 
-    function addByName(type, targetEl) {
-        const desc = getLatest(type);
-        if (!desc) {
-            console.warn("Unknown component:", type);
+        if (res.status === 422) {
+            const err = await res.json().catch(()=>({}));
+            console.warn("Validation", err);
+            alert("Validation errors—se console for detaljer.");
+            return;
+        }
+        if (!res.ok) {
+            alert("Save failed");
+            return;
+        }
+        const ok = await res.json().catch(()=> ({}));
+        this._version = ok.version ?? this._version;
+        alert("Saved");
+    },
+
+    // --- Image picker: bruger dit dialog #imagepicker ---
+    async openImagePickerDialog() {
+        const dlg = qs("#imagepicker");
+        if (!dlg) {
+            console.warn("Image picker dialog not found");
             return null;
         }
-        const ctx = {
-            templateEl: targetEl,
-            createNode,
-            renderNode,
-        };
-        return desc.add(ctx);
-    }
-
-    // expose
-    window.Editor = {
-        register,     // components call this at load time
-        addByName,    // UI calls this on "Add"
-        createNode,   // optional reuse in custom flows
-        renderNode,   // optional reuse
-    };
-})();
-
-(function () {
-    let dlg, gridEl, searchEl, inited = false, cachedItems = [], currentResolve = null;
-    let pageSize = 40;
-
-    function ensureDialog() {
-        if (!dlg) {
-            dlg = document.getElementById('imagepicker');
-            if (!dlg) throw new Error('#imagepicker <dialog> not found');
-            gridEl = dlg.querySelector('.dlg__grid');
-            searchEl = dlg.querySelector('.dlg__search');
-
-            // Luk med Esc / Cancel → resolve(null) men behold markup
-            dlg.addEventListener('close', () => {
-                if (currentResolve) { currentResolve(null); currentResolve = null; }
-            });
-
-            // Debounced søgning
-            let t = 0;
-            searchEl?.addEventListener('input', () => {
-                clearTimeout(t);
-                t = setTimeout(() => reload(searchEl.value.trim()), 250);
-            });
-        }
-    }
-
-    async function loadOnce() {
-        if (inited) return;
-        await reload("");
-        inited = true;
-    }
-
-    async function reload(search) {
-        gridEl.setAttribute('aria-busy', 'true');
-        try {
-            const res = await fetch(`/media?page=1&pageSize=${pageSize}`, {
-                headers: { "Accept": "application/json" },
-                credentials: "same-origin"
-            });
-            if (!res.ok) throw new Error('media list failed');
-            const data = await res.json();
-            cachedItems = data.items || [];
-            renderItems(cachedItems);
-        } catch (e) {
-            gridEl.innerHTML = `<div class="dlg__error">Failed to load images</div>`;
-            console.warn(e);
-        } finally {
-            gridEl.removeAttribute('aria-busy');
-        }
-    }
-
-    function renderItems(items) {
-        gridEl.innerHTML = "";
-        for (const it of items) {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'dlg__thumb';
-            btn.innerHTML = `
-        <img loading="lazy" src="/cmsimg/thumbnail/${it.url}.webp" alt="${it.alt ?? ""}">
-      `;
-            btn.addEventListener('click', () => {
-                // Vælg → resolve med item og luk dialogen (markup bevares)
-                if (currentResolve) { currentResolve(it); currentResolve = null; }
-                dlg.close();
-            });
-            gridEl.appendChild(btn);
-        }
-    }
-
-    async function openImagePickerDialog(opts = {}) {
-        ensureDialog();
-        if (!inited) await loadOnce(); // første gang henter vi data og renderer grid
-        // (senere: overvej at respektere opts.search ved første åbning; ellers behold cache)
+        // første åbning kan loade billeder (valgfrit)
+        await this._ensureImageGridLoaded(dlg, "");
+    
         return new Promise((resolve) => {
-            currentResolve = resolve;
-            // Safari fallback: hvis dialog.showModal ikke findes, simuler modal med class
-            if (typeof dlg.showModal === 'function') {
-                dlg.showModal();
-            } else {
-                dlg.setAttribute('open', '');
-                dlg.classList.add('is-open'); // style som modal
+            function onClose() {
+                dlg.removeEventListener("close", onClose);
+                const v = dlg.returnValue;
+                if (v && v !== "cancel") {
+                    try { resolve(JSON.parse(v)); } catch { resolve(null); }
+                } else resolve(null);
             }
+            dlg.addEventListener("close", onClose);
+            dlg.showModal();
         });
-    }
+    },
 
-    // eksponer i Editor-namespace
-    window.Editor = window.Editor || {};
-    window.Editor.openImagePickerDialog = openImagePickerDialog;
+    async _ensureImageGridLoaded(dlg, q) {
+        const grid = qs(".dlg__grid", dlg);
+        const search = qs(".dlg__search", dlg);
+        if (!grid) return;
 
-    // (valgfrit) API til at “preload’e” uden at åbne dialog (fx kald ved side-load)
-    window.Editor.preloadImagePicker = async function () {
-        ensureDialog();
-        await loadOnce();
+        const items = await this._fetchImages(q);
+        grid.innerHTML = "";
+        for (const it of items) {
+            // værdier vi forsøger at sende tilbage: id OG/ELLER url + alt
+            const val = JSON.stringify({url: it.url || "", alt: it.alt || "" });
+            const btn = document.createElement("button");
+            btn.type = "submit";
+            btn.className = "imgpick";
+            btn.value = val;
+            btn.innerHTML = `
+                  <img src="/cmsimg/thumbnail/${it.url}.webp" alt="${it.alt || ""}">
+                `;
+            grid.appendChild(btn);
+        }
+
+        if (search && !search._wired) {
+            search._wired = true;
+            search.addEventListener("input", (e) => {
+                this._ensureImageGridLoaded(dlg, e.target.value.trim());
+            });
+        }
+    },
+
+    async _fetchImages(query) {
+        try {
+            const u = new URL("/media", location.origin);
+            if (query) u.searchParams.set("q", query);
+            const r = await fetch(u, { headers: { Accept: "application/json" }});
+            if (r.ok) {
+            const j = await r.json();
+            const arr = j.items || j || [];
+            // normaliser
+            return arr.map(x => ({
+                url: x.url || x.hash || "",
+                alt: x.altText || x.alt || "",
+            }));
+        }
+        } catch {}
+            // fallback demo
+            return [
+        { id: "demo1", url: "/images/demo1.jpg", thumb: "/images/demo1.jpg", alt: "Demo 1", name: "Demo 1" },
+        { id: "demo2", url: "/images/demo2.jpg", thumb: "/images/demo2.jpg", alt: "Demo 2", name: "Demo 2" }
+            ];
+        }
     };
-})();
 
-(function () {
-    const selectEl = document.getElementById('editorControllerSelect');
-    const addBtn = document.getElementById('addEditorControllerBtn');
-    const templateRoot = document.getElementById('template');
+    window.Editor = Editor;
 
-    function enableEditorControls() {
-        if (selectEl) {
-            selectEl.disabled = false;
-            selectEl.setAttribute('aria-disabled', 'false');
-        }
-        if (addBtn) {
-            addBtn.disabled = false;
-            addBtn.setAttribute('aria-disabled', 'false');
-        }
-    }
-
-    addBtn?.addEventListener('click', () => {
-        const type = selectEl?.value || '';
-        if (!type || !templateRoot) return;
-
-        // Ask the registry to add the latest version of this component
-        const node = window.Editor?.addByName?.(type, templateRoot);
-        if (!node) return;
-
-        // TODO: optional—push node into your in-memory template JSON, e.g.:
-        // window.EditorState?.addNode(node);
+    document.addEventListener("DOMContentLoaded", () => {
+        if (!qs("#page-content")) return;
+        Editor.init().catch(err => {
+            console.error(err);
+            alert("Init failed");
+        });
     });
-
-    // Expose a global hook the editor bundle can call when ready
-    window.enableEditorControls = enableEditorControls;
-
 })();
-
-enableEditorControls();
